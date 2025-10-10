@@ -1,0 +1,92 @@
+# MkDocs configuration for GitHub Pages
+
+site_name: beatstoch Documentation
+site_url: https://james-see.github.io/beatstoch/
+site_description: BPM-aware stochastic drum MIDI generator
+site_author: Your Name
+
+# Repository
+repo_url: https://github.com/james-see/beatstoch
+repo_name: james-see/beatstoch
+edit_uri: edit/main/docs/
+
+# Theme configuration
+theme:
+  name: material
+  palette:
+    primary: blue
+    accent: blue
+  features:
+    - navigation.tabs
+    - navigation.sections
+    - navigation.expand
+    - search.suggest
+    - search.highlight
+    - content.footnote.tooltips
+    - header.autohide
+  icon:
+    repo: fontawesome/brands/github
+
+# Navigation structure
+nav:
+  - Home: index.md
+  - User Guide: user-guide.md
+  - API Reference: api-reference.md
+  - Developer Guide: developer-guide.md
+
+# Markdown extensions
+markdown_extensions:
+  - admonition
+  - codehilite:
+      guess_lang: false
+  - footnotes
+  - meta
+  - toc:
+      permalink: true
+  - pymdownx.arithmatex:
+      generic: true
+  - pymdownx.betterostia:
+      simplified_loader: true
+  - pymdownx.caret
+  - pymdownx.critic
+  - pymdownx.details
+  - pymdownx.emoji:
+      emoji_generator: !!python/name:pymdownx.emoji.to_svg
+      emoji_index: !!python/name:pymdownx.emoji.twemoji
+  - pymdownx.inlinehilite
+  - pymdownx.keys
+  - pymdownx.mark
+  - pymdownx.smartsymbols
+  - pymdownx.superfences:
+      custom_fences:
+        - name: mermaid
+          class: mermaid
+          format: !!python/name:pymdownx.superfences.fence_code_format
+  - pymdownx.tabbed:
+      alternate_style: true
+  - pymdownx.tasklist:
+      custom_checkbox: true
+  - pymdownx.tilde
+
+# Plugins
+plugins:
+  - search
+  - minify:
+      minify_html: true
+
+# Customization
+extra:
+  version:
+    provider: mike
+    default: latest
+
+# Social links (optional)
+extra:
+  social:
+    - icon: fontawesome/brands/github
+      link: https://github.com/james-see/beatstoch
+    - icon: fontawesome/brands/python
+      link: https://pypi.org/project/beatstoch/
+
+# Copyright
+copyright: Copyright &copy; 2024 Your Name
