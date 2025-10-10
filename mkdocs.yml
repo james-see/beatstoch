@@ -71,13 +71,9 @@ plugins:
   - search
   - minify:
       minify_html: true
-  - mike
 
 # Customization
 extra:
-  version:
-    provider: mike
-    default: latest
   social:
     - icon: fontawesome/brands/github
       link: https://github.com/james-see/beatstoch
