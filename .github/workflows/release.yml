@@ -45,11 +45,20 @@ jobs:
     - name: Build package
       run: uv build
 
-    - name: Upload to GitHub Release
-      uses: softprops/action-gh-release@v1
-      with:
-        files: dist/*
-        generate_release_notes: true
+    - name: Install GitHub CLI
+      run: |
+        curl -fsSL https://cli.github.com/packages/githubcli-archive-keyring.gpg | sudo dd of=/usr/share/keyrings/githubcli-archive-keyring.gpg
+        echo "deb [arch=$(dpkg --print-architecture) signed-by=/usr/share/keyrings/githubcli-archive-keyring.gpg] https://cli.github.com/packages stable main" | sudo tee /etc/apt/sources.list.d/github-cli.list > /dev/null
+        sudo apt update
+        sudo apt install gh
+
+    - name: Create Release
+      run: |
+        # Create a simple release using GitHub CLI
+        gh release create "${GITHUB_REF#refs/tags/}" \
+          --title "Release ${GITHUB_REF#refs/tags/}" \
+          --notes "Automated release for ${GITHUB_REF#refs/tags/}" \
+          dist/*
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
