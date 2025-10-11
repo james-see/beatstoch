@@ -4,6 +4,7 @@
 
 [![Python 3.9+](https://img.shields.io/badge/python-3.9+-blue.svg)](https://www.python.org/downloads/)
 [![uv](https://img.shields.io/badge/built%20with-uv-purple.svg)](https://github.com/astral-sh/uv)
+[![GitHub stars](https://img.shields.io/github/stars/james-see/beatstoch.svg?style=social&label=Star)](https://github.com/james-see/beatstoch)
 
 ## Features
 
@@ -228,7 +229,9 @@ mkdocs gh-deploy
 
 ## License
 
-[Add your license information here]
+This project is released into the public domain under the [Unlicense](https://unlicense.org/).
+
+[![License: Unlicense](https://img.shields.io/badge/license-Unlicense-blue.svg)](http://unlicense.org/)
 
 ## Contributing
 
