@@ -90,7 +90,7 @@ mid2.save("stoch_127_breaks.mid")
 ### `generate-bpm` command (explicit BPM)
 - `bpm`: Target BPM (required)
 - `--bars`: Number of bars (default: 8)
-- `--style`: Drum style (default: house)
+- `--style`: Drum style - `house`, `breaks`, or `generic` (default: house)
 - `--steps-per-beat`: Resolution (default: 4)
 - `--swing`: Swing amount (default: 0.10)
 - `--intensity`: Pattern density (default: 0.9)
@@ -99,13 +99,13 @@ mid2.save("stoch_127_breaks.mid")
 ## Drum Styles
 
 ### House
-Classic four-on-the-floor kick pattern with steady hi-hats and snares on 2/4.
+Classic four-on-the-floor kick pattern with steady hi-hats and snares on 2/4. Highly predictable timing with minimal randomization.
 
 ### Breaks
-More complex, breakbeat-style patterns with varied kick/snare placement.
+More complex, breakbeat-style patterns with varied kick/snare placement. Maintains syncopated feel while being more predictable than fully stochastic versions.
 
 ### Generic
-Balanced, all-purpose drum pattern suitable for most genres.
+Balanced, all-purpose drum pattern suitable for most genres. Reliable backbeat with consistent timing and minimal randomization.
 
 ## Output
 

@@ -169,19 +169,19 @@ generate_stochastic_pattern(
 
 ### House Style
 - Classic four-on-the-floor kick pattern
-- Steady hi-hats with openings
-- Snares on beats 2 and 4
+- Steady hi-hats with predictable openings
+- Reliable snares on beats 2 and 4
 - Best for: House, techno, minimal
 
 ### Breaks Style
-- More complex kick patterns
-- Varied snare placement
-- Syncopated hi-hat patterns
+- Complex kick patterns with consistent timing
+- Predictable snare placement
+- Steady syncopated hi-hat patterns
 - Best for: Breakbeat, drum & bass, hip-hop
 
 ### Generic Style
 - Balanced, all-purpose patterns
-- Moderate complexity
+- Moderate complexity with predictable timing
 - Works well across genres
 - Best for: General use, experimentation
 

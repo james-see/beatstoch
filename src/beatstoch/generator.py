@@ -51,52 +51,62 @@ def generate_stochastic_pattern(
     track.append(MetaMessage("set_tempo", tempo=tempo, time=0))
 
     if style == "house":
+        # Steady house: reliable four-on-the-floor with consistent hats
         kick_probs = [
-            0.95 if (i % steps_per_beat == 0) else 0.15 for i in range(steps_per_bar)
+            0.98 if (i % steps_per_beat == 0) else 0.05 for i in range(steps_per_bar)
         ]
         snare_probs = [
-            0.85 if (i % (2 * steps_per_beat) == steps_per_beat) else 0.1
+            0.95 if (i % (2 * steps_per_beat) == steps_per_beat) else 0.03
             for i in range(steps_per_bar)
         ]
         hat_probs = [
-            0.75 if (i % (steps_per_beat // 2) != 0) else 0.55
+            0.90 if (i % (steps_per_beat // 2) != 0) else 0.70
             for i in range(steps_per_bar)
         ]
         instruments = [
-            ("kick", kick_probs, (95, 120), 0.006),
-            ("snare", snare_probs, (90, 115), 0.008),
-            ("closed_hat", hat_probs, (60, 95), 0.004),
+            ("kick", kick_probs, (95, 120), 0.003),  # Less jitter for steady feel
+            ("snare", snare_probs, (90, 115), 0.004),
+            ("closed_hat", hat_probs, (60, 95), 0.002),
             (
                 "open_hat",
                 [
-                    0.08 if i % steps_per_beat == 2 else 0.02
+                    0.15 if i % steps_per_beat == 2 else 0.05
                     for i in range(steps_per_bar)
                 ],
                 (70, 95),
-                0.010,
+                0.006,
             ),
         ]
     elif style == "breaks":
-        kick_probs = [0.7 if i in (0, 6, 8, 14) else 0.2 for i in range(steps_per_bar)]
-        snare_probs = [0.8 if i in (4, 12) else 0.15 for i in range(steps_per_bar)]
-        hat_probs = [0.6 for _ in range(steps_per_bar)]
+        # Steady breaks: predictable syncopated pattern with consistent timing
+        kick_probs = [0.90 if i in (0, 6, 8, 14) else 0.10 for i in range(steps_per_bar)]
+        snare_probs = [0.92 if i in (4, 12) else 0.08 for i in range(steps_per_bar)]
+        hat_probs = [0.85 for _ in range(steps_per_bar)]
         instruments = [
-            ("kick", kick_probs, (90, 115), 0.010),
-            ("snare", snare_probs, (90, 115), 0.012),
-            ("closed_hat", hat_probs, (55, 95), 0.006),
+            ("kick", kick_probs, (90, 115), 0.005),  # Less jitter for steady feel
+            ("snare", snare_probs, (90, 115), 0.006),
+            ("closed_hat", hat_probs, (55, 95), 0.003),
             (
                 "open_hat",
-                [0.12 if i in (7, 15) else 0.04 for i in range(steps_per_bar)],
+                [0.20 if i in (7, 15) else 0.08 for i in range(steps_per_bar)],
                 (70, 95),
-                0.012,
+                0.008,
             ),
         ]
     else:
-        base = [0.5 for _ in range(steps_per_bar)]
+        # Steady generic: reliable backbeat with consistent timing
+        kick_probs = [
+            0.95 if (i % steps_per_beat == 0) else 0.05 for i in range(steps_per_bar)
+        ]
+        snare_probs = [
+            0.90 if (i % (2 * steps_per_beat) == steps_per_beat) else 0.05
+            for i in range(steps_per_bar)
+        ]
+        hat_probs = [0.80 for _ in range(steps_per_bar)]
         instruments = [
-            ("kick", base, (85, 115), 0.008),
-            ("snare", base, (85, 115), 0.010),
-            ("closed_hat", base, (60, 95), 0.005),
+            ("kick", kick_probs, (85, 115), 0.004),  # Less jitter for steady feel
+            ("snare", snare_probs, (85, 115), 0.005),
+            ("closed_hat", hat_probs, (60, 95), 0.003),
         ]
 
     for idx, (name, probs, vel_rng, jitter) in enumerate(instruments):
