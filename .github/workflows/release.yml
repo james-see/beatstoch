@@ -13,7 +13,8 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        python-version: ['3.9', '3.10', '3.11', '3.12', '3.13', '3.14']
+        python-version: ['3.9', '3.10', '3.11', '3.12', '3.13']
+        # TODO: Add '3.14' to matrix when available in GitHub Actions setup-python
     steps:
     - uses: actions/checkout@v4
 
@@ -23,7 +24,7 @@ jobs:
         python-version: ${{ matrix.python-version }}
 
     - name: Install uv
-      uses: astral-sh/setup-uv@v2
+      uses: astral-sh/setup-uv@v3
 
     - name: Install dependencies
       run: uv sync --dev
@@ -39,7 +40,8 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        python-version: ['3.9', '3.10', '3.11', '3.12', '3.13', '3.14']
+        python-version: ['3.9', '3.10', '3.11', '3.12', '3.13']
+        # TODO: Add '3.14' to matrix when available in GitHub Actions setup-python
     steps:
     - uses: actions/checkout@v4
 
@@ -49,7 +51,7 @@ jobs:
         python-version: ${{ matrix.python-version }}
 
     - name: Install uv
-      uses: astral-sh/setup-uv@v2
+      uses: astral-sh/setup-uv@v3
 
     - name: Build package
       run: uv build
@@ -96,7 +98,7 @@ jobs:
         python-version: '3.9'
 
     - name: Install uv
-      uses: astral-sh/setup-uv@v2
+      uses: astral-sh/setup-uv@v3
 
     - name: Build package
       run: uv build
