@@ -5,7 +5,7 @@ This guide covers development workflows, release processes, and project maintena
 ## Development Setup
 
 ### Prerequisites
-- Python 3.9+ (tested on 3.9-3.14)
+- Python 3.9+ (tested on 3.9-3.13, 3.14 when available in runner images)
 - [uv](https://github.com/astral-sh/uv) package manager (recommended)
 - Git
 
