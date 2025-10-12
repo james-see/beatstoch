@@ -76,15 +76,18 @@ jobs:
       with:
         path: ./dist-artifacts
 
+    - name: List downloaded files
+      run: find ./dist-artifacts -type f -name "*.whl" -o -name "*.tar.gz" | head -20
+
     - name: Create Release
-      uses: softprops/action-gh-release@v2
+      uses: ncipollo/release-action@v1
       with:
-        files: ./dist-artifacts/**/*
-        generate_release_notes: true
+        artifacts: "./dist-artifacts/**/*.whl,./dist-artifacts/**/*.tar.gz"
+        generateReleaseNotes: true
         draft: false
         prerelease: false
-      env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        makeLatest: true
+        token: ${{ secrets.GITHUB_TOKEN }}
 
   deploy-docs:
     needs: test
