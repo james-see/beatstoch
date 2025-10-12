@@ -3,6 +3,7 @@
 **BPM-aware stochastic drum MIDI generator** - Create dynamic, probabilistic drum patterns that adapt to any song's BPM.
 
 [![Python 3.9+](https://img.shields.io/badge/python-3.9+-blue.svg)](https://www.python.org/downloads/)
+[![CI](https://github.com/james-see/beatstoch/workflows/Release%20and%20Publish/badge.svg)](https://github.com/james-see/beatstoch/actions)
 [![uv](https://img.shields.io/badge/built%20with-uv-purple.svg)](https://github.com/astral-sh/uv)
 [![GitHub stars](https://img.shields.io/github/stars/james-see/beatstoch.svg?style=social&label=Star)](https://github.com/james-see/beatstoch)
 
@@ -117,7 +118,7 @@ Files are compatible with all major DAWs and MIDI software.
 
 ## Requirements
 
-- Python 3.9+
+- Python 3.9+ (tested on 3.9-3.14)
 - Internet connection (for BPM database lookup)
 - MIDI-compatible software (for playback/editing)
 
