@@ -118,7 +118,7 @@ Files are compatible with all major DAWs and MIDI software.
 
 ## Requirements
 
-- Python 3.9+ (tested on 3.9-3.13, 3.14 when available in CI)
+- Python 3.9+ (tested on 3.9-3.14)
 - Internet connection (for BPM database lookup)
 - MIDI-compatible software (for playback/editing)
 
