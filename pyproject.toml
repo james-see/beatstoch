@@ -5,7 +5,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "beatstoch"
-version = "1.1.5"
+version = "1.1.6"
 description = "BPM-aware stochastic drum generator: library + CLI."
 authors = [{ name = "James Campbell" }]
 readme = "README.md"
