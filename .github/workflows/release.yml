@@ -58,10 +58,28 @@ jobs:
     - name: Build package
       run: uv build
 
+    - name: Upload build artifacts
+      uses: actions/upload-artifact@v4
+      with:
+        name: dist-${{ matrix.python-version }}
+        path: dist/
+        retention-days: 1
+
+  release:
+    needs: build
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v5
+
+    - name: Download all build artifacts
+      uses: actions/download-artifact@v4
+      with:
+        path: ./dist-artifacts
+
     - name: Create Release
       uses: softprops/action-gh-release@v2
       with:
-        files: dist/*
+        files: ./dist-artifacts/**/*
         generate_release_notes: true
         draft: false
         prerelease: false
@@ -75,7 +93,7 @@ jobs:
     - uses: actions/checkout@v5
 
     - name: Set up Python 3.9
-      uses: actions/setup-python@v4
+      uses: actions/setup-python@v6
       with:
         python-version: '3.9'
 
@@ -88,19 +106,22 @@ jobs:
       run: mkdocs gh-deploy --force
 
   publish-pypi:
-    needs: [test, build]
+    needs: [test, release]
     runs-on: ubuntu-latest
     if: startsWith(github.ref, 'refs/tags/v')
     steps:
     - uses: actions/checkout@v5
 
     - name: Set up Python 3.9
-      uses: actions/setup-python@v4
+      uses: actions/setup-python@v6
       with:
         python-version: '3.9'
 
     - name: Install uv
       uses: astral-sh/setup-uv@v2
+
+    - name: Install dependencies
+      run: uv sync --dev
 
     - name: Build package
       run: uv build
