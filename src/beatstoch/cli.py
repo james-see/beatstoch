@@ -28,6 +28,8 @@ def main():
     gsong.add_argument("--steps-per-beat", type=int, default=4)
     gsong.add_argument("--swing", type=float, default=0.10)
     gsong.add_argument("--intensity", type=float, default=0.9)
+    gsong.add_argument("--groove-intensity", type=float, default=0.7,
+                      help="Psychoacoustic groove intensity (0.0-1.0)")
     gsong.add_argument("--seed", type=int)
     gsong.add_argument("--fallback-bpm", type=float)
     gsong.add_argument(
@@ -43,6 +45,8 @@ def main():
     gbpm.add_argument("--steps-per-beat", type=int, default=4)
     gbpm.add_argument("--swing", type=float, default=0.10)
     gbpm.add_argument("--intensity", type=float, default=0.9)
+    gbpm.add_argument("--groove-intensity", type=float, default=0.7,
+                      help="Psychoacoustic groove intensity (0.0-1.0)")
     gbpm.add_argument("--seed", type=int)
 
     args = parser.parse_args()
@@ -57,6 +61,7 @@ def main():
                 steps_per_beat=args.steps_per_beat,
                 swing=args.swing,
                 intensity=args.intensity,
+                groove_intensity=args.groove_intensity,
                 seed=args.seed,
                 fallback_bpm=args.fallback_bpm,
                 verbose=args.verbose,  # pass through
@@ -82,6 +87,7 @@ def main():
             steps_per_beat=args.steps_per_beat,
             swing=args.swing,
             intensity=args.intensity,
+            groove_intensity=args.groove_intensity,
             seed=args.seed if args.seed is not None else 42,
             style=args.style,
         )

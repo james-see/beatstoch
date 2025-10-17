@@ -10,8 +10,12 @@
 ## Features
 
 - **BPM Database Integration**: Automatically looks up song BPM from [BPM Database](https://www.bpmdatabase.com/)
-- **Multiple Styles**: House, breaks, and generic drum patterns
-- **Stochastic Generation**: Creates varied, probabilistic drum patterns
+- **Psychoacoustic Algorithm**: Research-based rhythms using golden ratio, Fibonacci sequences, and fractal complexity
+- **Multiple Styles**: House, breaks, and generic drum patterns with natural human feel
+- **Stochastic Generation**: Creates varied, probabilistic drum patterns with optimal predictability vs surprise balance
+- **Golden Ratio Microtiming**: Microtiming variations (20-30ms) for authentic groove perception
+- **Natural Velocity Curves**: Sine wave-based dynamics for expressive, human-like drum hits
+- **Fractal Pattern Complexity**: Multi-level fractal generation for organic rhythmic complexity
 - **MIDI Export**: Generates standard MIDI files compatible with any DAW
 - **CLI & Library**: Use as a command-line tool or Python library
 
@@ -57,7 +61,8 @@ mid, bpm = generate_from_song(
     bars=8,
     style="house",
     swing=0.1,
-    intensity=0.9
+    intensity=0.9,
+    groove_intensity=0.8
 )
 mid.save(f"stoch_1979_{int(bpm)}bpm.mid")
 print(f"Generated pattern at {bpm} BPM")
@@ -69,7 +74,8 @@ mid2 = generate_stochastic_pattern(
     style="breaks",
     seed=123,
     steps_per_beat=4,
-    swing=0.12
+    swing=0.12,
+    groove_intensity=0.7
 )
 mid2.save("stoch_127_breaks.mid")
 ```
@@ -84,6 +90,7 @@ mid2.save("stoch_127_breaks.mid")
 - `--steps-per-beat`: Resolution (default: 4)
 - `--swing`: Swing amount 0.0-1.0 (default: 0.10)
 - `--intensity`: Pattern density 0.0-1.0 (default: 0.9)
+- `--groove-intensity`: Psychoacoustic groove strength 0.0-1.0 (default: 0.7)
 - `--seed`: Random seed for reproducible patterns
 - `--fallback-bpm`: BPM to use if lookup fails
 - `--verbose`: Show BPM lookup details
@@ -95,18 +102,19 @@ mid2.save("stoch_127_breaks.mid")
 - `--steps-per-beat`: Resolution (default: 4)
 - `--swing`: Swing amount (default: 0.10)
 - `--intensity`: Pattern density (default: 0.9)
+- `--groove-intensity`: Psychoacoustic groove strength 0.0-1.0 (default: 0.7)
 - `--seed`: Random seed
 
 ## Drum Styles
 
 ### House
-Classic four-on-the-floor kick pattern with steady hi-hats and snares on 2/4. Highly predictable timing with minimal randomization.
+Classic four-on-the-floor kick pattern enhanced with golden ratio timing and fractal hi-hat complexity. Features natural velocity curves and microtiming groove for authentic dance music feel.
 
 ### Breaks
-More complex, breakbeat-style patterns with varied kick/snare placement. Maintains syncopated feel while being more predictable than fully stochastic versions.
+Syncopated breakbeat patterns using fractal complexity and Fibonacci probability distributions. Golden ratio microtiming creates the authentic "human feel" groove prized by breakbeat producers.
 
 ### Generic
-Balanced, all-purpose drum pattern suitable for most genres. Reliable backbeat with consistent timing and minimal randomization.
+Balanced backbeat pattern with psychoacoustic optimization. Combines predictable structure (85% predictability) with controlled surprise elements for engaging, natural-sounding rhythms suitable for any genre.
 
 ## Output
 

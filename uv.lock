@@ -9,7 +9,7 @@ resolution-markers = [
 
 [[package]]
 name = "beatstoch"
-version = "1.0.9"
+version = "1.2.0"
 source = { editable = "." }
 dependencies = [
     { name = "beautifulsoup4" },

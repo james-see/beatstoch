@@ -1,5 +1,6 @@
 # filename: beatstoch/generator.py
 import random
+import math
 from typing import List, Tuple, Optional
 
 import numpy as np
@@ -18,6 +19,12 @@ DRUMS = {
     "tom_high": 48,
 }
 
+# Psychoacoustic constants based on research
+GOLDEN_RATIO = 1.618033988749
+GROOVE_TIMING_MS = (20, 30)  # Human-preferred microtiming range
+PREDICTABILITY_RATIO = 0.85  # 85% predictable, 15% surprise
+FRACTAL_DEPTH = 3  # Fractal recursion depth for natural complexity
+
 
 def _triangular(mean: float, spread: float) -> float:
     return np.random.triangular(-spread, 0.0, spread) + mean
@@ -25,6 +32,98 @@ def _triangular(mean: float, spread: float) -> float:
 
 def _clip_velocity(val: float, lo: int = 1, hi: int = 127) -> int:
     return max(lo, min(hi, int(round(val))))
+
+
+def _fibonacci_probabilities(steps: int, base_prob: float = 0.3) -> List[float]:
+    """Generate probabilities using Fibonacci sequence for natural rhythm patterns."""
+    fib = [1, 1, 2, 3, 5, 8, 13, 21, 34, 55, 89, 144]
+    probs = []
+
+    for i in range(steps):
+        # Use Fibonacci ratios for probability modulation
+        fib_idx = i % len(fib)
+        fib_ratio = fib[fib_idx] / fib[(fib_idx + 1) % len(fib)]
+        prob = base_prob * (0.5 + 0.5 * fib_ratio)
+        probs.append(min(1.0, prob))
+
+    return probs
+
+
+def _golden_ratio_timing(steps: int, bpm: float) -> List[float]:
+    """Generate timing offsets based on golden ratio for pleasing rhythm."""
+    base_timing = 60.0 / bpm  # seconds per beat
+    offsets = []
+
+    for i in range(steps):
+        # Golden ratio creates pleasing mathematical relationships
+        golden_offset = (i * GOLDEN_RATIO) % 1.0
+        # Convert to milliseconds for microtiming
+        ms_offset = golden_offset * base_timing * 1000
+        # Keep within human-preferred groove range
+        clamped_offset = max(GROOVE_TIMING_MS[0],
+                           min(GROOVE_TIMING_MS[1], ms_offset))
+        offsets.append(clamped_offset / 1000.0)  # Convert back to seconds
+
+    return offsets
+
+
+def _fractal_pattern(length: int, complexity: float) -> List[float]:
+    """Generate fractal-based pattern for natural complexity."""
+    # Use depth based on length to ensure we get the right number of items
+    depth = max(1, int(math.log2(length)) + 1)
+
+    pattern = []
+    for _ in range(length):
+        # Each position gets a fractal-influenced value
+        base_val = random.random()
+        detail = sum(random.random() * (0.5 ** (d + 1)) for d in range(depth))
+        pattern.append((base_val + detail * complexity) / (1 + complexity))
+
+    return [min(1.0, max(0.0, p)) for p in pattern]
+
+
+def _natural_velocity_curve(steps: int, base_velocity: Tuple[int, int]) -> List[int]:
+    """Generate natural velocity variation using sine wave curves."""
+    lo, hi = base_velocity
+    velocities = []
+
+    for i in range(steps):
+        # Use multiple sine waves for natural variation
+        primary = math.sin(i * 0.5) * 0.3  # Main curve
+        secondary = math.sin(i * 0.23) * 0.15  # Secondary variation
+        tertiary = math.sin(i * 0.77) * 0.1   # High frequency detail
+
+        # Combine waves for natural feel
+        combined = primary + secondary + tertiary
+        normalized = (combined + 1.0) / 2.0  # Normalize to 0-1
+
+        # Apply to velocity range
+        velocity = lo + (hi - lo) * normalized
+        velocities.append(_clip_velocity(velocity, lo, hi))
+
+    return velocities
+
+
+def _psychoacoustic_balance(probs: List[float], predictability: float = PREDICTABILITY_RATIO) -> List[float]:
+    """Balance predictability vs surprise for optimal human preference."""
+    balanced = []
+
+    for prob in probs:
+        # Add controlled randomness while maintaining overall predictability
+        if random.random() < predictability:
+            # Use original probability (predictable)
+            balanced.append(prob)
+        else:
+            # Add surprise element within reasonable bounds
+            surprise_factor = random.uniform(0.1, 0.4)
+            if random.random() < 0.5:
+                # Increase probability for syncopation
+                balanced.append(min(1.0, prob * (1 + surprise_factor)))
+            else:
+                # Decrease probability for rests
+                balanced.append(max(0.0, prob * (1 - surprise_factor)))
+
+    return balanced
 
 
 def generate_stochastic_pattern(
@@ -36,6 +135,7 @@ def generate_stochastic_pattern(
     intensity: float = 0.9,
     seed: int = 42,
     style: str = "house",
+    groove_intensity: float = 0.7,  # New parameter for psychoacoustic groove
 ) -> MidiFile:
     random.seed(seed)
     np.random.seed(seed)
@@ -50,97 +150,113 @@ def generate_stochastic_pattern(
     tempo = bpm2tempo(bpm)
     track.append(MetaMessage("set_tempo", tempo=tempo, time=0))
 
+    # Generate psychoacoustic patterns for each style
     if style == "house":
-        # Steady house: reliable four-on-the-floor with consistent hats
-        kick_probs = [
-            0.98 if (i % steps_per_beat == 0) else 0.05 for i in range(steps_per_bar)
-        ]
-        snare_probs = [
-            0.95 if (i % (2 * steps_per_beat) == steps_per_beat) else 0.03
-            for i in range(steps_per_bar)
-        ]
-        hat_probs = [
-            0.90 if (i % (steps_per_beat // 2) != 0) else 0.70
-            for i in range(steps_per_bar)
-        ]
+        # House: Golden ratio four-on-the-floor with fractal hats
+        kick_base = _fibonacci_probabilities(steps_per_bar, 0.25)
+        kick_probs = [0.98 if (i % steps_per_beat == 0) else p * 0.2 for i, p in enumerate(kick_base)]
+
+        snare_base = _fibonacci_probabilities(steps_per_bar, 0.2)
+        snare_probs = [0.95 if (i % (2 * steps_per_beat) == steps_per_beat) else p * 0.15
+                      for i, p in enumerate(snare_base)]
+
+        hat_fractal = _fractal_pattern(steps_per_bar, 0.6)
+        hat_probs = [p * 0.9 if (i % (steps_per_beat // 2) != 0) else p * 0.7
+                    for i, p in enumerate(hat_fractal)]
+
         instruments = [
-            ("kick", kick_probs, (95, 120), 0.003),  # Less jitter for steady feel
-            ("snare", snare_probs, (90, 115), 0.004),
-            ("closed_hat", hat_probs, (60, 95), 0.002),
-            (
-                "open_hat",
-                [
-                    0.15 if i % steps_per_beat == 2 else 0.05
-                    for i in range(steps_per_bar)
-                ],
-                (70, 95),
-                0.006,
-            ),
+            ("kick", kick_probs, (100, 127), 0.002, _natural_velocity_curve),
+            ("snare", snare_probs, (95, 120), 0.003, _natural_velocity_curve),
+            ("closed_hat", hat_probs, (65, 100), 0.001, _natural_velocity_curve),
+            ("open_hat", _fractal_pattern(steps_per_bar, 0.4), (75, 100), 0.004, _natural_velocity_curve),
         ]
     elif style == "breaks":
-        # Steady breaks: predictable syncopated pattern with consistent timing
-        kick_probs = [0.90 if i in (0, 6, 8, 14) else 0.10 for i in range(steps_per_bar)]
-        snare_probs = [0.92 if i in (4, 12) else 0.08 for i in range(steps_per_bar)]
-        hat_probs = [0.85 for _ in range(steps_per_bar)]
+        # Breaks: Syncopated with golden ratio timing and fractal complexity
+        kick_fractal = _fractal_pattern(steps_per_bar, 0.7)
+        kick_probs = [0.90 if i in (0, 6, 8, 14) else p * 0.4 for i, p in enumerate(kick_fractal)]
+
+        snare_fractal = _fractal_pattern(steps_per_bar, 0.5)
+        snare_probs = [0.92 if i in (4, 12) else p * 0.35 for i, p in enumerate(snare_fractal)]
+
+        hat_probs = _fractal_pattern(steps_per_bar, 0.8)
+
         instruments = [
-            ("kick", kick_probs, (90, 115), 0.005),  # Less jitter for steady feel
-            ("snare", snare_probs, (90, 115), 0.006),
-            ("closed_hat", hat_probs, (55, 95), 0.003),
-            (
-                "open_hat",
-                [0.20 if i in (7, 15) else 0.08 for i in range(steps_per_bar)],
-                (70, 95),
-                0.008,
-            ),
+            ("kick", kick_probs, (95, 125), 0.003, _natural_velocity_curve),
+            ("snare", snare_probs, (95, 125), 0.004, _natural_velocity_curve),
+            ("closed_hat", hat_probs, (60, 100), 0.002, _natural_velocity_curve),
+            ("open_hat", _fractal_pattern(steps_per_bar, 0.6), (75, 105), 0.005, _natural_velocity_curve),
         ]
     else:
-        # Steady generic: reliable backbeat with consistent timing
-        kick_probs = [
-            0.95 if (i % steps_per_beat == 0) else 0.05 for i in range(steps_per_bar)
-        ]
-        snare_probs = [
-            0.90 if (i % (2 * steps_per_beat) == steps_per_beat) else 0.05
-            for i in range(steps_per_bar)
-        ]
-        hat_probs = [0.80 for _ in range(steps_per_bar)]
+        # Generic: Balanced backbeat with natural variation
+        kick_fib = _fibonacci_probabilities(steps_per_bar, 0.22)
+        kick_probs = [0.95 if (i % steps_per_beat == 0) else p * 0.25 for i, p in enumerate(kick_fib)]
+
+        snare_fib = _fibonacci_probabilities(steps_per_bar, 0.18)
+        snare_probs = [0.90 if (i % (2 * steps_per_beat) == steps_per_beat) else p * 0.25
+                      for i, p in enumerate(snare_fib)]
+
+        hat_fractal = _fractal_pattern(steps_per_bar, 0.5)
+        hat_probs = [p * 0.8 for p in hat_fractal]
+
         instruments = [
-            ("kick", kick_probs, (85, 115), 0.004),  # Less jitter for steady feel
-            ("snare", snare_probs, (85, 115), 0.005),
-            ("closed_hat", hat_probs, (60, 95), 0.003),
+            ("kick", kick_probs, (90, 120), 0.002, _natural_velocity_curve),
+            ("snare", snare_probs, (90, 120), 0.003, _natural_velocity_curve),
+            ("closed_hat", hat_probs, (65, 100), 0.001, _natural_velocity_curve),
         ]
 
-    for idx, (name, probs, vel_rng, jitter) in enumerate(instruments):
-        scaled = [max(0.0, min(1.0, p * intensity)) for p in probs]
-        instruments[idx] = (name, scaled, vel_rng, jitter)
+    # Apply psychoacoustic balancing and intensity scaling
+    for idx, (name, probs, vel_rng, jitter, vel_func) in enumerate(instruments):
+        # Balance predictability vs surprise
+        balanced_probs = _psychoacoustic_balance(probs, PREDICTABILITY_RATIO)
+        # Apply intensity and groove effects
+        scaled_probs = [max(0.0, min(1.0, p * intensity * (0.8 + 0.4 * groove_intensity)))
+                       for p in balanced_probs]
+        instruments[idx] = (name, scaled_probs, vel_rng, jitter, vel_func)
 
-    def _step_to_ticks(step_idx: int, jitter_sec: float) -> int:
+    def _step_to_ticks(step_idx: int, jitter_sec: float, golden_offset: float) -> int:
         base_beats = step_idx / steps_per_beat
         base_ticks = int(round(mid.ticks_per_beat * base_beats))
+
+        # Apply swing
         if steps_per_beat % 2 == 0:
             eighth_step = steps_per_beat // 2
             if (step_idx % eighth_step) == (eighth_step - 1):
                 swing_ticks = int(round(mid.ticks_per_beat * (0.5 * swing)))
                 base_ticks += swing_ticks
+
+        # Apply golden ratio microtiming for groove
+        groove_ticks = int(round(mid.ticks_per_beat * golden_offset))
+        base_ticks += groove_ticks
+
+        # Apply traditional jitter
         sec_per_beat = tempo / 1_000_000.0
         ticks_per_sec = mid.ticks_per_beat / sec_per_beat
         jitter_ticks = int(round(jitter_sec * ticks_per_sec))
         return base_ticks + jitter_ticks
 
     events: List[Tuple[int, str, int]] = []
+    # Generate golden ratio timing offsets for the entire pattern
+    golden_offsets = _golden_ratio_timing(steps_per_bar * bars, bpm)
+
     for bar in range(bars):
         bar_offset_steps = bar * steps_per_bar
-        for name, probs, vel_rng, jitter in instruments:
+        for name, probs, vel_rng, jitter, vel_func in instruments:
             lo, hi = vel_rng
+            # Generate natural velocity curve for this instrument
+            vel_curve = vel_func(steps_per_bar, vel_rng)
+
             for s in range(steps_per_bar):
                 if random.random() < probs[s]:
-                    mean_vel = (lo + hi) / 2
-                    spread = (hi - lo) / 2
-                    vel = _clip_velocity(
-                        _triangular(mean_vel, spread * 0.6) * intensity, lo, hi
-                    )
+                    # Use natural velocity curve instead of random triangular
+                    vel = _clip_velocity(vel_curve[s] * intensity, lo, hi)
+
+                    # Use golden ratio timing for psychoacoustic groove
+                    offset_idx = (bar_offset_steps + s) % len(golden_offsets)
+                    golden_offset = golden_offsets[offset_idx] * groove_intensity
+
                     jitter_sec = _triangular(0.0, jitter)
                     abs_step = bar_offset_steps + s
-                    tick = _step_to_ticks(abs_step, jitter_sec)
+                    tick = _step_to_ticks(abs_step, jitter_sec, golden_offset)
                     events.append((tick, name, vel))
 
     events.sort(key=lambda x: x[0])
@@ -169,6 +285,7 @@ def generate_from_song(
     steps_per_beat: int = 4,
     swing: float = 0.10,
     intensity: float = 0.9,
+    groove_intensity: float = 0.7,
     seed: Optional[int] = None,
     fallback_bpm: Optional[float] = None,
     verbose: bool = False,
@@ -190,6 +307,7 @@ def generate_from_song(
         steps_per_beat=steps_per_beat,
         swing=swing,
         intensity=intensity,
+        groove_intensity=groove_intensity,
         seed=seed,
         style=style,
     )
