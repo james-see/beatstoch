@@ -56,9 +56,12 @@ Options:
   --artist TEXT          Artist name (improves BPM lookup accuracy)
   --bars INTEGER         Number of bars to generate (default: 8)
   --style [house|breaks|generic]  Drum style (default: house)
+  --meter TEXT           Time signature e.g. '4/4', '3/4', '2/4' (default: 4/4)
+  --humanize FLOAT       Humanization 0.0-1.0: adds ghost notes and timing variation (default: 0.0)
   --steps-per-beat INTEGER        Resolution (default: 4)
   --swing FLOAT          Swing amount 0.0-1.0 (default: 0.10)
   --intensity FLOAT      Pattern density 0.0-1.0 (default: 0.9)
+  --groove-intensity FLOAT        Psychoacoustic groove strength 0.0-1.0 (default: 0.7)
   --seed INTEGER         Random seed for reproducible patterns
   --fallback-bpm FLOAT   BPM to use if lookup fails
   --verbose             Show BPM lookup details
@@ -72,11 +75,56 @@ beatstoch generate-bpm [OPTIONS] BPM
 Options:
   --bars INTEGER         Number of bars (default: 8)
   --style [house|breaks|generic]  Drum style (default: house)
+  --meter TEXT           Time signature e.g. '4/4', '3/4', '2/4' (default: 4/4)
+  --humanize FLOAT       Humanization 0.0-1.0: adds ghost notes and timing variation (default: 0.0)
   --steps-per-beat INTEGER        Resolution (default: 4)
   --swing FLOAT          Swing amount (default: 0.10)
   --intensity FLOAT      Pattern density (default: 0.9)
+  --groove-intensity FLOAT        Psychoacoustic groove strength 0.0-1.0 (default: 0.7)
   --seed INTEGER         Random seed
   -h, --help            Show this message and exit
+```
+
+## Time Signatures (Meter)
+
+The `--meter` option sets the time signature with natural accent patterns:
+
+| Meter | Feel | Accent Pattern |
+|-------|------|----------------|
+| `4/4` | Standard | Strong - weak - medium - weak |
+| `3/4` | Waltz | Strong - weak - weak |
+| `2/4` | March | Strong - weak |
+
+```bash
+# Waltz in 3/4
+beatstoch generate-bpm 90 --meter 3/4 --style generic
+
+# March in 2/4
+beatstoch generate-bpm 110 --meter 2/4 --humanize 0.5
+```
+
+## Humanize Mode
+
+The `--humanize` option (0.0-1.0) makes patterns sound less mechanical:
+
+**Ghost Notes**: Subtle snare hits (velocity 25-50) on weak subdivisions
+**Timing Variation**: Random ±15ms offsets scaled by humanize amount
+
+Recommended values:
+- `0.0` - Machine-perfect timing (default)
+- `0.2-0.4` - Subtle humanization, tight feel
+- `0.5-0.7` - Natural human feel, noticeable ghost notes
+- `0.8-1.0` - Loose, expressive feel with prominent ghost notes
+
+```bash
+# Subtle humanization
+beatstoch generate-bpm 128 --humanize 0.3
+
+# Natural feel
+beatstoch generate-bpm 120 --humanize 0.6 --style house
+
+# Full humanization
+beatstoch generate-bpm 90 --meter 3/4 --humanize 1.0
 ```
 
 ## Python Library
@@ -107,9 +155,12 @@ midi_file, bpm = generate_from_song(
     artist="Michael Jackson",
     bars=16,                    # 16 bars long
     style="breaks",             # Breakbeat style
+    meter=(4, 4),               # Time signature
     steps_per_beat=4,           # 16th note resolution
     swing=0.12,                 # Light swing
     intensity=0.85,             # Dense pattern
+    groove_intensity=0.8,       # Psychoacoustic groove
+    humanize=0.5,               # Ghost notes and timing variation
     seed=42,                    # Reproducible
     fallback_bpm=120            # Fallback if lookup fails
 )
@@ -122,11 +173,23 @@ midi_file = generate_stochastic_pattern(
     steps_per_beat=8,           # 32nd note resolution
     swing=0.08,                 # Subtle swing
     intensity=0.7,              # Sparse pattern
+    groove_intensity=0.7,       # Psychoacoustic groove
+    humanize=0.6,               # Humanization
     seed=123,
     style="generic"             # All-purpose style
 )
 
 midi_file.save("complex_pattern.mid")
+
+# Humanized 3/4 waltz
+midi_file = generate_stochastic_pattern(
+    bpm=90,
+    bars=8,
+    meter=(3, 4),               # Waltz time
+    humanize=0.8,               # Heavy ghost notes
+    style="generic"
+)
+midi_file.save("waltz_humanized.mid")
 ```
 
 ### Function Signatures
@@ -138,9 +201,12 @@ generate_from_song(
     artist: Optional[str] = None,
     bars: int = 8,
     style: str = "house",
+    meter: Tuple[int, int] = (4, 4),
     steps_per_beat: int = 4,
     swing: float = 0.10,
     intensity: float = 0.9,
+    groove_intensity: float = 0.7,
+    humanize: float = 0.0,
     seed: Optional[int] = None,
     fallback_bpm: Optional[float] = None,
     verbose: bool = False,
@@ -160,6 +226,8 @@ generate_stochastic_pattern(
     intensity: float = 0.9,
     seed: int = 42,
     style: str = "house",
+    groove_intensity: float = 0.7,
+    humanize: float = 0.0,
 ) -> MidiFile
 ```
 
@@ -188,8 +256,17 @@ generate_stochastic_pattern(
 ## Output Files
 
 Generated MIDI files use descriptive naming:
-- `stoch_[artist]_[title]_[bpm]bpm.mid` (from song lookup)
-- `stoch_[bpm]bpm.mid` (from explicit BPM)
+- `stoch_[artist]_[title]_[bpm]bpm_[meter].mid` (from song lookup)
+- `stoch_[artist]_[title]_[bpm]bpm_[meter]_humanized.mid` (with humanize > 0)
+- `stoch_[bpm]bpm_[meter].mid` (from explicit BPM)
+- `stoch_[bpm]bpm_[meter]_humanized.mid` (with humanize > 0)
+
+Example filenames:
+```
+stoch_michael_jackson_billie_jean_117bpm_44.mid
+stoch_dave_brubeck_take_five_174bpm_34_humanized.mid
+stoch_128bpm_44_humanized.mid
+```
 
 Files are standard MIDI format compatible with:
 - Ableton Live

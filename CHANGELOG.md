@@ -7,6 +7,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.3.1] - 2024-11-30
+
+### Fixed
+- **Documentation**: Updated all docs (index, user-guide, api-reference) with meter and humanize features
+- **GitHub Pages**: Docs now reflect all 1.3.0 features
+
 ## [1.3.0] - 2024-11-30
 
 ### Added

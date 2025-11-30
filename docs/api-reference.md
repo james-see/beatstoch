@@ -14,9 +14,12 @@ generate_from_song(
     artist: Optional[str] = None,
     bars: int = 8,
     style: str = "house",
+    meter: Tuple[int, int] = (4, 4),
     steps_per_beat: int = 4,
     swing: float = 0.10,
     intensity: float = 0.9,
+    groove_intensity: float = 0.7,
+    humanize: float = 0.0,
     seed: Optional[int] = None,
     fallback_bpm: Optional[float] = None,
     verbose: bool = False,
@@ -28,9 +31,12 @@ generate_from_song(
 - `artist` (str, optional): Artist name for improved BPM lookup accuracy
 - `bars` (int): Number of bars to generate (default: 8)
 - `style` (str): Drum pattern style - "house", "breaks", or "generic" (default: "house")
+- `meter` (Tuple[int, int]): Time signature as (numerator, denominator) (default: (4, 4))
 - `steps_per_beat` (int): Time resolution (default: 4, i.e., 16th notes)
 - `swing` (float): Swing amount 0.0-1.0 (default: 0.10)
 - `intensity` (float): Pattern density 0.0-1.0 (default: 0.9)
+- `groove_intensity` (float): Psychoacoustic groove strength 0.0-1.0 (default: 0.7)
+- `humanize` (float): Humanization amount 0.0-1.0 - adds ghost notes and timing variation (default: 0.0)
 - `seed` (int, optional): Random seed for reproducible patterns
 - `fallback_bpm` (float, optional): BPM to use if database lookup fails
 - `verbose` (bool): Enable verbose logging (default: False)
@@ -51,6 +57,8 @@ midi_file, bpm = generate_from_song(
     bars=16,
     style="house",
     swing=0.12,
+    groove_intensity=0.8,
+    humanize=0.5,
     verbose=True
 )
 
@@ -72,18 +80,22 @@ generate_stochastic_pattern(
     intensity: float = 0.9,
     seed: int = 42,
     style: str = "house",
+    groove_intensity: float = 0.7,
+    humanize: float = 0.0,
 ) -> mido.MidiFile
 ```
 
 **Parameters:**
 - `bpm` (float): Target BPM for the pattern
 - `bars` (int): Number of bars to generate (default: 4)
-- `meter` (Tuple[int, int]): Time signature as (numerator, denominator) (default: (4, 4))
+- `meter` (Tuple[int, int]): Time signature as (numerator, denominator) - supports (4, 4), (3, 4), (2, 4) (default: (4, 4))
 - `steps_per_beat` (int): Time resolution (default: 4, i.e., 16th notes)
 - `swing` (float): Swing amount 0.0-1.0 (default: 0.12)
 - `intensity` (float): Pattern density 0.0-1.0 (default: 0.9)
 - `seed` (int): Random seed for reproducible patterns (default: 42)
 - `style` (str): Drum pattern style - "house", "breaks", or "generic" (default: "house")
+- `groove_intensity` (float): Psychoacoustic groove strength 0.0-1.0 (default: 0.7)
+- `humanize` (float): Humanization amount 0.0-1.0 - adds ghost notes and timing variation (default: 0.0)
 
 **Returns:**
 - MIDI file object
@@ -92,6 +104,7 @@ generate_stochastic_pattern(
 ```python
 from beatstoch import generate_stochastic_pattern
 
+# Standard breakbeat pattern
 pattern = generate_stochastic_pattern(
     bpm=128.0,
     bars=8,
@@ -100,9 +113,43 @@ pattern = generate_stochastic_pattern(
     intensity=0.85,
     seed=123
 )
-
 pattern.save("breakbeat_pattern.mid")
+
+# Humanized 3/4 waltz pattern
+waltz = generate_stochastic_pattern(
+    bpm=90.0,
+    bars=8,
+    meter=(3, 4),
+    style="generic",
+    humanize=0.7,
+    groove_intensity=0.6
+)
+waltz.save("waltz_humanized.mid")
 ```
+
+## Time Signatures
+
+The `meter` parameter controls the time signature and affects accent patterns:
+
+| Meter | Feel | Accent Pattern |
+|-------|------|----------------|
+| `(4, 4)` | Standard | Strong - weak - medium - weak |
+| `(3, 4)` | Waltz | Strong - weak - weak |
+| `(2, 4)` | March | Strong - weak |
+
+## Humanize Mode
+
+The `humanize` parameter (0.0-1.0) adds two key elements:
+
+**Ghost Notes**: Subtle snare hits (velocity 25-50) on weak subdivisions ("e" and "a" positions)
+
+**Timing Variation**: Random ±15ms offsets scaled by humanize amount
+
+Recommended values:
+- `0.0` - Machine-perfect timing (default)
+- `0.2-0.4` - Subtle humanization, tight feel
+- `0.5-0.7` - Natural human feel, noticeable ghost notes
+- `0.8-1.0` - Loose, expressive feel with prominent ghost notes
 
 ## Drum Styles
 

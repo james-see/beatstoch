@@ -14,10 +14,12 @@ beatstoch is a powerful tool for generating drum patterns that intelligently ada
 
 - **🎵 BPM Database Integration**: Automatically looks up song BPM from online databases
 - **🎶 Multiple Styles**: House, breaks, and generic drum patterns
-- **🔀 Stochastic Generation**: Creates varied, probabilistic drum patterns
+- **🔀 Stochastic Generation**: Creates varied, probabilistic drum patterns using golden ratio and Fibonacci sequences
 - **🎹 MIDI Export**: Generates standard MIDI files compatible with all DAWs
 - **⚡ CLI & Library**: Use as a command-line tool or Python library
-- **🎛️ Customizable**: Adjust swing, intensity, bars, and more
+- **🎛️ Customizable**: Adjust swing, intensity, bars, groove, and more
+- **🎼 Time Signatures**: Support for 4/4, 3/4, and 2/4 meters with natural accents
+- **👤 Humanize Mode**: Ghost notes and timing variation for authentic human feel
 
 ## Quick Start
 
@@ -29,6 +31,12 @@ beatstoch generate "Billie Jean" --artist "Michael Jackson"
 
 # Generate breaks pattern at specific BPM
 beatstoch generate-bpm 128 --bars 16 --style breaks
+
+# Humanized pattern with ghost notes
+beatstoch generate-bpm 120 --humanize 0.6 --style house
+
+# 3/4 waltz time with humanization
+beatstoch generate-bpm 90 --meter 3/4 --humanize 0.7
 
 # See all options
 beatstoch --help
@@ -44,15 +52,26 @@ midi_file, bpm = generate_from_song(
     "1979",
     artist="Smashing Pumpkins",
     bars=8,
-    style="house"
+    style="house",
+    groove_intensity=0.8
 )
 
-# Generate with explicit BPM
+# Generate with explicit BPM and humanization
 midi_file = generate_stochastic_pattern(
     bpm=127,
     bars=4,
     style="breaks",
-    swing=0.1
+    swing=0.1,
+    humanize=0.6  # Add ghost notes and timing variation
+)
+
+# Generate in 3/4 time
+midi_file = generate_stochastic_pattern(
+    bpm=90,
+    bars=8,
+    meter=(3, 4),  # Waltz time
+    humanize=0.7,
+    style="generic"
 )
 ```
 
