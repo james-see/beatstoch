@@ -11,9 +11,13 @@ Examples:
   beatstoch generate "Billie Jean" --artist "Michael Jackson"
   beatstoch generate "1979" --artist "Smashing Pumpkins" --bars 16
 
-  # Generate with explicit BPM
-  beatstoch generate-bpm 128 --style house
-  beatstoch generate-bpm 140 --style breaks --bars 16
+  # Generate with explicit BPM - various styles
+  beatstoch generate-bpm 128 --style house                 # Four-on-the-floor EDM
+  beatstoch generate-bpm 140 --style breaks --bars 16      # Syncopated breakbeat
+  beatstoch generate-bpm 120 --style rock                  # Driving rock beat
+  beatstoch generate-bpm 85 --style blues                  # Shuffle blues
+  beatstoch generate-bpm 110 --style indie                 # Loose indie rock
+  beatstoch generate-bpm 140 --style jazz                  # Jazz ride pattern
 
   # Different time signatures
   beatstoch generate-bpm 90 --meter 3/4 --style generic    # Waltz
@@ -26,11 +30,10 @@ Examples:
   # Control randomness with --predictability
   beatstoch generate-bpm 128 --predictability 1.0          # Fully predictable (mechanical)
   beatstoch generate-bpm 128 --predictability 0.5          # More variation/surprises
-  beatstoch generate-bpm 128 --predictability 0.0          # Maximum chaos
 
   # Combine features
-  beatstoch generate-bpm 90 --meter 3/4 --humanize 0.7 --style generic
-  beatstoch generate "Take Five" --artist "Dave Brubeck" --meter 3/4 --humanize 0.8 --fallback-bpm 174
+  beatstoch generate-bpm 120 --style rock --humanize 0.6 --groove-intensity 0.8
+  beatstoch generate "Take Five" --artist "Dave Brubeck" --style jazz --fallback-bpm 174
 """
 
 GENERATE_EXAMPLES = """\
@@ -47,10 +50,11 @@ GENERATE_BPM_EXAMPLES = """\
 Examples:
   beatstoch generate-bpm 128                               # Basic house at 128 BPM
   beatstoch generate-bpm 140 --style breaks --bars 16      # 16 bars of breakbeat
+  beatstoch generate-bpm 120 --style rock                  # Classic rock beat
+  beatstoch generate-bpm 85 --style blues --humanize 0.6   # Shuffle blues with feel
+  beatstoch generate-bpm 110 --style indie                 # Indie rock groove
+  beatstoch generate-bpm 140 --style jazz                  # Jazz ride pattern
   beatstoch generate-bpm 90 --meter 3/4 --style generic    # Waltz in 3/4
-  beatstoch generate-bpm 110 --meter 2/4 --humanize 0.5    # Humanized march
-  beatstoch generate-bpm 128 --humanize 0.7 --groove-intensity 0.8  # Full groove
-  beatstoch generate-bpm 174 --style breaks --humanize 0.6 --seed 42  # Reproducible DnB
   beatstoch generate-bpm 128 --predictability 1.0          # Fully predictable/mechanical
   beatstoch generate-bpm 128 --predictability 0.5          # More stochastic variation
 """
@@ -97,7 +101,7 @@ def main():
     gsong.add_argument(
         "--style",
         default="house",
-        choices=["house", "breaks", "generic"],
+        choices=["house", "breaks", "rock", "blues", "indie", "jazz", "generic"],
         help="Drum style (default: house)",
     )
     gsong.add_argument(
@@ -160,7 +164,7 @@ def main():
     gbpm.add_argument(
         "--style",
         default="house",
-        choices=["house", "breaks", "generic"],
+        choices=["house", "breaks", "rock", "blues", "indie", "jazz", "generic"],
         help="Drum style (default: house)",
     )
     gbpm.add_argument(

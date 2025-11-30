@@ -236,22 +236,56 @@ generate_stochastic_pattern(
 ## Drum Styles
 
 ### House Style
-- Classic four-on-the-floor kick pattern
-- Steady hi-hats with predictable openings
-- Reliable snares on beats 2 and 4
-- Best for: House, techno, minimal
+- Four-on-the-floor kick on every beat
+- Snare/clap layered on beats 2 and 4
+- Driving hi-hat patterns with open hat accents
+- Crash cymbal on bar 1 every 4 bars
+- Best for: House, techno, EDM, minimal
 
 ### Breaks Style
-- Complex kick patterns with consistent timing
-- Predictable snare placement
-- Steady syncopated hi-hat patterns
-- Best for: Breakbeat, drum & bass, hip-hop
+- Syncopated kick pattern (steps 0, 6, 8, 14)
+- Snare on beats 2 and 4 with ghost notes
+- Complex hi-hat patterns
+- Best for: Breakbeat, drum & bass, hip-hop, jungle
+
+### Rock Style
+- Kick on beats 1 and 3 with pickup notes
+- Strong snare backbeat on 2 and 4
+- Driving 8th note hi-hats
+- Open hat accents on upbeats
+- Crash cymbal accents, ride bell on beat 1
+- Best for: Rock, alternative, punk, metal
+
+### Blues Style
+- Shuffle feel (approximated triplet groove)
+- Kick on beats with shuffle "and"
+- Snare on 2 and 4 with ghost notes
+- Ride cymbal shuffle pattern (not hi-hats)
+- Pedal hi-hat on 2 and 4
+- Best for: Blues, shuffle, 12-bar, slow rock
+
+### Indie Style
+- Kick on 1 and 3, occasional beat 4
+- Snare on 2 and 4 with occasional rimshot
+- Sparse, driving hi-hat pattern
+- Floor tom accent on beat 4
+- Minimal cymbal use
+- Best for: Indie rock, alternative, lo-fi
+
+### Jazz Style
+- Classic jazz ride pattern (1, 2-and, 3, 4-and)
+- Sparse, comping kick (fractal placement)
+- Cross-stick/brush snare feel
+- Hi-hat on 2 and 4 with foot
+- No crashes - clean cymbal work
+- Best for: Jazz, swing, bebop, fusion
 
 ### Generic Style
-- Balanced, all-purpose patterns
-- Moderate complexity with predictable timing
-- Works well across genres
-- Best for: General use, experimentation
+- Balanced kick on every beat
+- Standard snare backbeat on 2 and 4
+- Natural hi-hat variation
+- Crash cymbal on bar 1 every 4 bars
+- Best for: General use, experimentation, demos
 
 ## GM Drum Map Reference
 

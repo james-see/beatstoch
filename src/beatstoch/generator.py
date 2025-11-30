@@ -9,43 +9,43 @@ from mido import Message, MetaMessage, MidiFile, MidiTrack, bpm2tempo
 # General MIDI drum note numbers (GM Standard)
 DRUMS = {
     # Kicks
-    "kick": 36,              # Bass Drum 1
-    "kick_acoustic": 35,     # Acoustic Bass Drum
+    "kick": 36,  # Bass Drum 1
+    "kick_acoustic": 35,  # Acoustic Bass Drum
     # Snares
-    "snare": 38,             # Acoustic Snare
-    "snare_electric": 40,    # Electric Snare
-    "side_stick": 37,        # Side Stick / Rimshot
-    "clap": 39,              # Hand Clap
+    "snare": 38,  # Acoustic Snare
+    "snare_electric": 40,  # Electric Snare
+    "side_stick": 37,  # Side Stick / Rimshot
+    "clap": 39,  # Hand Clap
     # Hi-hats
-    "closed_hat": 42,        # Closed Hi-Hat
-    "pedal_hat": 44,         # Pedal Hi-Hat
-    "open_hat": 46,          # Open Hi-Hat
+    "closed_hat": 42,  # Closed Hi-Hat
+    "pedal_hat": 44,  # Pedal Hi-Hat
+    "open_hat": 46,  # Open Hi-Hat
     # Cymbals
-    "crash": 49,             # Crash Cymbal 1
-    "crash2": 57,            # Crash Cymbal 2
-    "ride": 51,              # Ride Cymbal 1
-    "ride_bell": 53,         # Ride Bell
-    "ride2": 59,             # Ride Cymbal 2
-    "splash": 55,            # Splash Cymbal
-    "china": 52,             # Chinese Cymbal
+    "crash": 49,  # Crash Cymbal 1
+    "crash2": 57,  # Crash Cymbal 2
+    "ride": 51,  # Ride Cymbal 1
+    "ride_bell": 53,  # Ride Bell
+    "ride2": 59,  # Ride Cymbal 2
+    "splash": 55,  # Splash Cymbal
+    "china": 52,  # Chinese Cymbal
     # Toms
-    "tom_low": 41,           # Low Floor Tom
-    "tom_floor_high": 43,    # High Floor Tom
-    "tom_mid": 45,           # Low Tom
-    "tom_mid_low": 47,       # Low-Mid Tom
-    "tom_mid_high": 48,      # Hi-Mid Tom
-    "tom_high": 50,          # High Tom
+    "tom_low": 41,  # Low Floor Tom
+    "tom_floor_high": 43,  # High Floor Tom
+    "tom_mid": 45,  # Low Tom
+    "tom_mid_low": 47,  # Low-Mid Tom
+    "tom_mid_high": 48,  # Hi-Mid Tom
+    "tom_high": 50,  # High Tom
     # Percussion
-    "tambourine": 54,        # Tambourine
-    "cowbell": 56,           # Cowbell
-    "bongo_high": 60,        # Hi Bongo
-    "bongo_low": 61,         # Low Bongo
-    "conga_mute": 62,        # Mute Hi Conga
-    "conga_high": 63,        # Open Hi Conga
-    "conga_low": 64,         # Low Conga
-    "claves": 75,            # Claves
-    "woodblock_high": 76,    # Hi Wood Block
-    "woodblock_low": 77,     # Low Wood Block
+    "tambourine": 54,  # Tambourine
+    "cowbell": 56,  # Cowbell
+    "bongo_high": 60,  # Hi Bongo
+    "bongo_low": 61,  # Low Bongo
+    "conga_mute": 62,  # Mute Hi Conga
+    "conga_high": 63,  # Open Hi Conga
+    "conga_low": 64,  # Low Conga
+    "claves": 75,  # Claves
+    "woodblock_high": 76,  # Hi Wood Block
+    "woodblock_low": 77,  # Low Wood Block
 }
 
 # Psychoacoustic constants based on research
@@ -290,9 +290,28 @@ def generate_stochastic_pattern(
     tempo = bpm2tempo(bpm)
     track.append(MetaMessage("set_tempo", tempo=tempo, time=0))
 
+    # Helper to create crash on beat 1 of every N bars
+    def _crash_pattern(steps: int, every_n_bars: int = 4) -> List[float]:
+        probs = [0.0] * steps
+        # Crash on first beat
+        probs[0] = 0.95 if every_n_bars <= 4 else 0.8
+        return probs
+
+    # Helper to create ride pattern (8ths or quarters)
+    def _ride_pattern(steps: int, density: str = "eighth") -> List[float]:
+        probs = []
+        for i in range(steps):
+            if density == "quarter" and i % steps_per_beat == 0:
+                probs.append(0.85)
+            elif density == "eighth" and i % (steps_per_beat // 2) == 0:
+                probs.append(0.80)
+            else:
+                probs.append(0.0)
+        return probs
+
     # Generate psychoacoustic patterns for each style
     if style == "house":
-        # House: Golden ratio four-on-the-floor with fractal hats
+        # House: Four-on-the-floor with driving hats and sparse crashes
         kick_base = _fibonacci_probabilities(steps_per_bar, 0.25)
         kick_probs = [
             0.98 if (i % steps_per_beat == 0) else p * 0.2
@@ -305,6 +324,12 @@ def generate_stochastic_pattern(
             for i, p in enumerate(snare_base)
         ]
 
+        # Clap layered with snare
+        clap_probs = [
+            0.70 if (i % (2 * steps_per_beat) == steps_per_beat) else 0.0
+            for i in range(steps_per_bar)
+        ]
+
         hat_fractal = _fractal_pattern(steps_per_bar, 0.6)
         hat_probs = [
             p * 0.9 if (i % (steps_per_beat // 2) != 0) else p * 0.7
@@ -314,6 +339,7 @@ def generate_stochastic_pattern(
         instruments = [
             ("kick", kick_probs, (100, 127), 0.002, _natural_velocity_curve),
             ("snare", snare_probs, (95, 120), 0.003, _natural_velocity_curve),
+            ("clap", clap_probs, (80, 105), 0.002, _natural_velocity_curve),
             ("closed_hat", hat_probs, (65, 100), 0.001, _natural_velocity_curve),
             (
                 "open_hat",
@@ -322,9 +348,17 @@ def generate_stochastic_pattern(
                 0.004,
                 _natural_velocity_curve,
             ),
+            (
+                "crash",
+                _crash_pattern(steps_per_bar, 4),
+                (90, 115),
+                0.002,
+                _natural_velocity_curve,
+            ),
         ]
+
     elif style == "breaks":
-        # Breaks: Syncopated with golden ratio timing and fractal complexity
+        # Breaks: Syncopated with ghost notes and complex hats
         kick_fractal = _fractal_pattern(steps_per_bar, 0.7)
         kick_probs = [
             0.90 if i in (0, 6, 8, 14) else p * 0.4 for i, p in enumerate(kick_fractal)
@@ -348,7 +382,203 @@ def generate_stochastic_pattern(
                 0.005,
                 _natural_velocity_curve,
             ),
+            (
+                "crash",
+                _crash_pattern(steps_per_bar, 8),
+                (85, 110),
+                0.003,
+                _natural_velocity_curve,
+            ),
         ]
+
+    elif style == "rock":
+        # Rock: Strong backbeat, driving 8th note hats, crash accents
+        kick_probs = [0.0] * steps_per_bar
+        # Kick on 1 and 3 (and sometimes the "and" of 2)
+        for i in range(steps_per_bar):
+            if i == 0:  # Beat 1
+                kick_probs[i] = 0.98
+            elif i == 2 * steps_per_beat:  # Beat 3
+                kick_probs[i] = 0.95
+            elif i == steps_per_beat + steps_per_beat // 2:  # "and" of 2
+                kick_probs[i] = 0.45
+            else:
+                kick_probs[i] = 0.08
+
+        # Snare on 2 and 4
+        snare_probs = [
+            0.98 if (i % (2 * steps_per_beat) == steps_per_beat) else 0.05
+            for i in range(steps_per_bar)
+        ]
+
+        # Driving 8th note hats
+        hat_probs = [
+            0.90 if (i % (steps_per_beat // 2) == 0) else 0.15
+            for i in range(steps_per_bar)
+        ]
+
+        # Open hat on upbeats occasionally
+        open_hat_probs = [
+            0.40 if (i % steps_per_beat == steps_per_beat // 2) else 0.0
+            for i in range(steps_per_bar)
+        ]
+
+        instruments = [
+            ("kick", kick_probs, (100, 127), 0.003, _natural_velocity_curve),
+            ("snare", snare_probs, (100, 127), 0.004, _natural_velocity_curve),
+            ("closed_hat", hat_probs, (70, 100), 0.002, _natural_velocity_curve),
+            ("open_hat", open_hat_probs, (75, 105), 0.003, _natural_velocity_curve),
+            (
+                "crash",
+                _crash_pattern(steps_per_bar, 4),
+                (95, 120),
+                0.002,
+                _natural_velocity_curve,
+            ),
+            (
+                "ride_bell",
+                [0.30 if i == 0 else 0.0 for i in range(steps_per_bar)],
+                (80, 100),
+                0.002,
+                _natural_velocity_curve,
+            ),
+        ]
+
+    elif style == "blues":
+        # Blues: Shuffle feel, ride cymbal, laid back snare
+        # Shuffle: emphasis on 1, skip 2, hit 3 (triplet feel approximated with 16ths)
+        kick_probs = [0.0] * steps_per_bar
+        for i in range(steps_per_bar):
+            if i % steps_per_beat == 0:  # On the beat
+                kick_probs[i] = 0.85
+            elif i % steps_per_beat == 3:  # Shuffle "and" (approximating triplet)
+                kick_probs[i] = 0.50
+
+        # Snare on 2 and 4, with ghost notes
+        snare_probs = [0.0] * steps_per_bar
+        for i in range(steps_per_bar):
+            if i % (2 * steps_per_beat) == steps_per_beat:  # Beats 2 and 4
+                snare_probs[i] = 0.95
+            elif i % steps_per_beat in (1, 3):  # Ghost positions
+                snare_probs[i] = 0.25
+
+        # Ride cymbal shuffle pattern
+        ride_probs = [0.0] * steps_per_bar
+        for i in range(steps_per_bar):
+            if i % steps_per_beat == 0:  # On beat
+                ride_probs[i] = 0.90
+            elif i % steps_per_beat == 3:  # Shuffle
+                ride_probs[i] = 0.75
+
+        # Hi-hat on 2 and 4 with foot
+        pedal_hat_probs = [
+            0.70 if (i % (2 * steps_per_beat) == steps_per_beat) else 0.0
+            for i in range(steps_per_bar)
+        ]
+
+        instruments = [
+            ("kick", kick_probs, (85, 115), 0.004, _natural_velocity_curve),
+            ("snare", snare_probs, (70, 110), 0.005, _natural_velocity_curve),
+            ("ride", ride_probs, (75, 100), 0.003, _natural_velocity_curve),
+            ("pedal_hat", pedal_hat_probs, (60, 85), 0.002, _natural_velocity_curve),
+            (
+                "crash",
+                _crash_pattern(steps_per_bar, 8),
+                (80, 105),
+                0.003,
+                _natural_velocity_curve,
+            ),
+        ]
+
+    elif style == "indie":
+        # Indie: Driving but loose, tom accents, minimal cymbals
+        kick_probs = [0.0] * steps_per_bar
+        for i in range(steps_per_bar):
+            if i == 0:  # Beat 1
+                kick_probs[i] = 0.95
+            elif i == 2 * steps_per_beat:  # Beat 3
+                kick_probs[i] = 0.90
+            elif i == 3 * steps_per_beat:  # Beat 4
+                kick_probs[i] = 0.40
+            else:
+                kick_probs[i] = _fractal_pattern(1, 0.3)[0] * 0.15
+
+        # Snare on 2 and 4, occasional rimshot
+        snare_probs = [
+            0.95 if (i % (2 * steps_per_beat) == steps_per_beat) else 0.0
+            for i in range(steps_per_bar)
+        ]
+
+        side_stick_probs = [
+            0.30 if (i % (2 * steps_per_beat) == steps_per_beat) else 0.0
+            for i in range(steps_per_bar)
+        ]
+
+        # Sparse, driving hats
+        hat_probs = [
+            0.85 if (i % (steps_per_beat // 2) == 0) else 0.10
+            for i in range(steps_per_bar)
+        ]
+
+        # Floor tom accent on beat 4 sometimes
+        tom_probs = [
+            0.35 if i == 3 * steps_per_beat else 0.0 for i in range(steps_per_bar)
+        ]
+
+        instruments = [
+            ("kick", kick_probs, (95, 120), 0.004, _natural_velocity_curve),
+            ("snare", snare_probs, (90, 120), 0.005, _natural_velocity_curve),
+            ("side_stick", side_stick_probs, (70, 95), 0.003, _natural_velocity_curve),
+            ("closed_hat", hat_probs, (65, 95), 0.003, _natural_velocity_curve),
+            ("tom_low", tom_probs, (80, 110), 0.004, _natural_velocity_curve),
+            (
+                "crash",
+                _crash_pattern(steps_per_bar, 8),
+                (85, 110),
+                0.003,
+                _natural_velocity_curve,
+            ),
+        ]
+
+    elif style == "jazz":
+        # Jazz: Ride pattern, kick/snare comping, brush feel
+        # Ride: classic jazz ride pattern (1, 2-and, 3, 4-and)
+        ride_probs = [0.0] * steps_per_bar
+        for i in range(steps_per_bar):
+            beat_pos = i % steps_per_beat
+            beat_num = i // steps_per_beat
+            if beat_pos == 0:  # On beats
+                ride_probs[i] = 0.90
+            elif beat_pos == steps_per_beat // 2 and beat_num in (
+                1,
+                3,
+            ):  # "and" of 2 and 4
+                ride_probs[i] = 0.75
+
+        # Sparse, comping kick
+        kick_probs = _fractal_pattern(steps_per_bar, 0.4)
+        kick_probs = [
+            p * 0.5 if i % steps_per_beat != 0 else p * 0.3
+            for i, p in enumerate(kick_probs)
+        ]
+
+        # Comping snare (cross-stick feel)
+        snare_probs = _fractal_pattern(steps_per_bar, 0.35)
+        snare_probs = [p * 0.4 for p in snare_probs]
+
+        # Hi-hat on 2 and 4
+        pedal_hat_probs = [
+            0.85 if (i % (2 * steps_per_beat) == steps_per_beat) else 0.0
+            for i in range(steps_per_bar)
+        ]
+
+        instruments = [
+            ("kick", kick_probs, (60, 95), 0.006, _natural_velocity_curve),
+            ("side_stick", snare_probs, (55, 85), 0.005, _natural_velocity_curve),
+            ("ride", ride_probs, (70, 100), 0.003, _natural_velocity_curve),
+            ("pedal_hat", pedal_hat_probs, (60, 80), 0.002, _natural_velocity_curve),
+        ]
+
     else:
         # Generic: Balanced backbeat with natural variation
         kick_fib = _fibonacci_probabilities(steps_per_bar, 0.22)
@@ -370,6 +600,13 @@ def generate_stochastic_pattern(
             ("kick", kick_probs, (90, 120), 0.002, _natural_velocity_curve),
             ("snare", snare_probs, (90, 120), 0.003, _natural_velocity_curve),
             ("closed_hat", hat_probs, (65, 100), 0.001, _natural_velocity_curve),
+            (
+                "crash",
+                _crash_pattern(steps_per_bar, 4),
+                (85, 110),
+                0.002,
+                _natural_velocity_curve,
+            ),
         ]
 
     # Apply psychoacoustic balancing and intensity scaling

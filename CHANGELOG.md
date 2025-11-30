@@ -7,6 +7,24 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.5.0] - 2024-11-30
+
+### Added
+- **New Styles**: Rock, Blues, Indie, Jazz drum patterns
+  - Rock: Driving 8th note hats, kick on 1/3, strong backbeat, crash accents
+  - Blues: Shuffle feel with ride cymbal, ghost notes, pedal hi-hat
+  - Indie: Loose feel with floor tom accents, rimshots, minimal cymbals
+  - Jazz: Classic ride pattern, sparse comping, cross-stick feel
+- **Enhanced Patterns**: All styles now include crash cymbals, more instruments
+  - House: Added clap layer, crash on beat 1 every 4 bars
+  - Breaks: Added crash accents
+  - Generic: Added crash cymbal
+
+### Changed
+- Patterns now use more of the GM drum map (crashes, rides, toms, percussion)
+- Updated CLI examples to showcase all 7 styles
+- Comprehensive style documentation in user guide
+
 ## [1.4.1] - 2024-11-30
 
 ### Added
