@@ -6,17 +6,46 @@ from typing import List, Tuple, Optional
 import numpy as np
 from mido import Message, MetaMessage, MidiFile, MidiTrack, bpm2tempo
 
-# General MIDI drum note numbers
+# General MIDI drum note numbers (GM Standard)
 DRUMS = {
-    "kick": 36,
-    "snare": 38,
-    "closed_hat": 42,
-    "open_hat": 46,
-    "ride": 51,
-    "clap": 39,
-    "tom_low": 41,
-    "tom_mid": 45,
-    "tom_high": 48,
+    # Kicks
+    "kick": 36,              # Bass Drum 1
+    "kick_acoustic": 35,     # Acoustic Bass Drum
+    # Snares
+    "snare": 38,             # Acoustic Snare
+    "snare_electric": 40,    # Electric Snare
+    "side_stick": 37,        # Side Stick / Rimshot
+    "clap": 39,              # Hand Clap
+    # Hi-hats
+    "closed_hat": 42,        # Closed Hi-Hat
+    "pedal_hat": 44,         # Pedal Hi-Hat
+    "open_hat": 46,          # Open Hi-Hat
+    # Cymbals
+    "crash": 49,             # Crash Cymbal 1
+    "crash2": 57,            # Crash Cymbal 2
+    "ride": 51,              # Ride Cymbal 1
+    "ride_bell": 53,         # Ride Bell
+    "ride2": 59,             # Ride Cymbal 2
+    "splash": 55,            # Splash Cymbal
+    "china": 52,             # Chinese Cymbal
+    # Toms
+    "tom_low": 41,           # Low Floor Tom
+    "tom_floor_high": 43,    # High Floor Tom
+    "tom_mid": 45,           # Low Tom
+    "tom_mid_low": 47,       # Low-Mid Tom
+    "tom_mid_high": 48,      # Hi-Mid Tom
+    "tom_high": 50,          # High Tom
+    # Percussion
+    "tambourine": 54,        # Tambourine
+    "cowbell": 56,           # Cowbell
+    "bongo_high": 60,        # Hi Bongo
+    "bongo_low": 61,         # Low Bongo
+    "conga_mute": 62,        # Mute Hi Conga
+    "conga_high": 63,        # Open Hi Conga
+    "conga_low": 64,         # Low Conga
+    "claves": 75,            # Claves
+    "woodblock_high": 76,    # Hi Wood Block
+    "woodblock_low": 77,     # Low Wood Block
 }
 
 # Psychoacoustic constants based on research

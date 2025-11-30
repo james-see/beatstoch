@@ -7,6 +7,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.4.1] - 2024-11-30
+
+### Added
+- **Expanded GM Drum Map**: Added 30+ new drum/percussion sounds following General MIDI standard
+  - Additional kicks, snares, cymbals, toms
+  - Full percussion section: cowbell, congas, bongos, claves, woodblocks, tambourine
+- **Documentation**: Added complete GM drum map reference table to user guide
+
 ## [1.4.0] - 2024-11-30
 
 ### Added

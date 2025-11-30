@@ -253,6 +253,66 @@ generate_stochastic_pattern(
 - Works well across genres
 - Best for: General use, experimentation
 
+## GM Drum Map Reference
+
+beatstoch uses General MIDI (GM) standard drum note assignments. All generated MIDI files are compatible with any GM-compliant synthesizer, DAW, or drum machine.
+
+### Kicks (Notes 35-36)
+| Key | Note | GM Name |
+|-----|------|---------|
+| `kick` | 36 | Bass Drum 1 |
+| `kick_acoustic` | 35 | Acoustic Bass Drum |
+
+### Snares & Claps (Notes 37-40)
+| Key | Note | GM Name |
+|-----|------|---------|
+| `snare` | 38 | Acoustic Snare |
+| `snare_electric` | 40 | Electric Snare |
+| `side_stick` | 37 | Side Stick / Rimshot |
+| `clap` | 39 | Hand Clap |
+
+### Hi-Hats (Notes 42, 44, 46)
+| Key | Note | GM Name |
+|-----|------|---------|
+| `closed_hat` | 42 | Closed Hi-Hat |
+| `pedal_hat` | 44 | Pedal Hi-Hat |
+| `open_hat` | 46 | Open Hi-Hat |
+
+### Cymbals (Notes 49-59)
+| Key | Note | GM Name |
+|-----|------|---------|
+| `crash` | 49 | Crash Cymbal 1 |
+| `crash2` | 57 | Crash Cymbal 2 |
+| `ride` | 51 | Ride Cymbal 1 |
+| `ride_bell` | 53 | Ride Bell |
+| `ride2` | 59 | Ride Cymbal 2 |
+| `splash` | 55 | Splash Cymbal |
+| `china` | 52 | Chinese Cymbal |
+
+### Toms (Notes 41-50)
+| Key | Note | GM Name |
+|-----|------|---------|
+| `tom_low` | 41 | Low Floor Tom |
+| `tom_floor_high` | 43 | High Floor Tom |
+| `tom_mid` | 45 | Low Tom |
+| `tom_mid_low` | 47 | Low-Mid Tom |
+| `tom_mid_high` | 48 | Hi-Mid Tom |
+| `tom_high` | 50 | High Tom |
+
+### Percussion (Notes 54-77)
+| Key | Note | GM Name |
+|-----|------|---------|
+| `tambourine` | 54 | Tambourine |
+| `cowbell` | 56 | Cowbell |
+| `bongo_high` | 60 | Hi Bongo |
+| `bongo_low` | 61 | Low Bongo |
+| `conga_mute` | 62 | Mute Hi Conga |
+| `conga_high` | 63 | Open Hi Conga |
+| `conga_low` | 64 | Low Conga |
+| `claves` | 75 | Claves |
+| `woodblock_high` | 76 | Hi Wood Block |
+| `woodblock_low` | 77 | Low Wood Block |
+
 ## Output Files
 
 Generated MIDI files use descriptive naming:
