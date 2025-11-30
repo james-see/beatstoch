@@ -7,6 +7,18 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.4.0] - 2024-11-30
+
+### Added
+- **Predictability Control**: New `--predictability` option (0.0-1.0) to control pattern randomness
+  - `1.0` = fully predictable/mechanical patterns
+  - `0.85` = default (85% predictable, 15% surprise)
+  - `0.0` = maximum chaos/variation
+
+### Changed
+- CLI examples updated to show predictability usage
+- Generator now accepts `predictability` parameter instead of using hardcoded constant
+
 ## [1.3.3] - 2024-11-30
 
 ### Improved

@@ -246,6 +246,7 @@ def generate_stochastic_pattern(
     style: str = "house",
     groove_intensity: float = 0.7,
     humanize: float = 0.0,  # 0.0 = off, 1.0 = full humanization
+    predictability: float = 0.85,  # 0.0 = chaotic, 1.0 = fully predictable
 ) -> MidiFile:
     random.seed(seed)
     np.random.seed(seed)
@@ -345,7 +346,7 @@ def generate_stochastic_pattern(
     # Apply psychoacoustic balancing and intensity scaling
     for idx, (name, probs, vel_rng, jitter, vel_func) in enumerate(instruments):
         # Balance predictability vs surprise
-        balanced_probs = _psychoacoustic_balance(probs, PREDICTABILITY_RATIO)
+        balanced_probs = _psychoacoustic_balance(probs, predictability)
         # Apply intensity and groove effects
         scaled_probs = [
             max(0.0, min(1.0, p * intensity * (0.8 + 0.4 * groove_intensity)))
@@ -454,6 +455,7 @@ def generate_from_song(
     intensity: float = 0.9,
     groove_intensity: float = 0.7,
     humanize: float = 0.0,
+    predictability: float = 0.85,
     seed: Optional[int] = None,
     fallback_bpm: Optional[float] = None,
     verbose: bool = False,
@@ -477,6 +479,7 @@ def generate_from_song(
         intensity=intensity,
         groove_intensity=groove_intensity,
         humanize=humanize,
+        predictability=predictability,
         seed=seed,
         style=style,
     )

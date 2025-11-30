@@ -23,6 +23,11 @@ Examples:
   beatstoch generate-bpm 120 --humanize 0.5                # Medium humanization
   beatstoch generate-bpm 128 --humanize 0.8 --style breaks # Heavy humanization
 
+  # Control randomness with --predictability
+  beatstoch generate-bpm 128 --predictability 1.0          # Fully predictable (mechanical)
+  beatstoch generate-bpm 128 --predictability 0.5          # More variation/surprises
+  beatstoch generate-bpm 128 --predictability 0.0          # Maximum chaos
+
   # Combine features
   beatstoch generate-bpm 90 --meter 3/4 --humanize 0.7 --style generic
   beatstoch generate "Take Five" --artist "Dave Brubeck" --meter 3/4 --humanize 0.8 --fallback-bpm 174
@@ -34,7 +39,8 @@ Examples:
   beatstoch generate "1979" --artist "Smashing Pumpkins" --bars 16 --style house
   beatstoch generate "Blue Monday" --artist "New Order" --humanize 0.6
   beatstoch generate "Take Five" --artist "Dave Brubeck" --meter 3/4 --humanize 0.8 --fallback-bpm 174
-  beatstoch generate "Around the World" --artist "Daft Punk" --verbose
+  beatstoch generate "Around the World" --artist "Daft Punk" --predictability 1.0  # Mechanical
+  beatstoch generate "Amen Brother" --artist "The Winstons" --predictability 0.5   # More variation
 """
 
 GENERATE_BPM_EXAMPLES = """\
@@ -45,6 +51,8 @@ Examples:
   beatstoch generate-bpm 110 --meter 2/4 --humanize 0.5    # Humanized march
   beatstoch generate-bpm 128 --humanize 0.7 --groove-intensity 0.8  # Full groove
   beatstoch generate-bpm 174 --style breaks --humanize 0.6 --seed 42  # Reproducible DnB
+  beatstoch generate-bpm 128 --predictability 1.0          # Fully predictable/mechanical
+  beatstoch generate-bpm 128 --predictability 0.5          # More stochastic variation
 """
 
 
@@ -128,6 +136,13 @@ def main():
         metavar="0.0-1.0",
         help="Psychoacoustic groove strength (default: 0.7)",
     )
+    gsong.add_argument(
+        "--predictability",
+        type=float,
+        default=0.85,
+        metavar="0.0-1.0",
+        help="Pattern predictability: 1.0=mechanical, 0.0=chaotic (default: 0.85)",
+    )
     gsong.add_argument("--seed", type=int, help="Random seed for reproducible patterns")
     gsong.add_argument("--fallback-bpm", type=float, help="BPM to use if lookup fails")
     gsong.add_argument("--verbose", action="store_true", help="Show BPM lookup details")
@@ -184,6 +199,13 @@ def main():
         metavar="0.0-1.0",
         help="Psychoacoustic groove strength (default: 0.7)",
     )
+    gbpm.add_argument(
+        "--predictability",
+        type=float,
+        default=0.85,
+        metavar="0.0-1.0",
+        help="Pattern predictability: 1.0=mechanical, 0.0=chaotic (default: 0.85)",
+    )
     gbpm.add_argument("--seed", type=int, help="Random seed for reproducible patterns")
 
     args = parser.parse_args()
@@ -206,6 +228,7 @@ def main():
                 intensity=args.intensity,
                 groove_intensity=args.groove_intensity,
                 humanize=args.humanize,
+                predictability=args.predictability,
                 seed=args.seed,
                 fallback_bpm=args.fallback_bpm,
                 verbose=args.verbose,
@@ -237,6 +260,7 @@ def main():
             intensity=args.intensity,
             groove_intensity=args.groove_intensity,
             humanize=args.humanize,
+            predictability=args.predictability,
             seed=args.seed if args.seed is not None else 42,
             style=args.style,
         )
