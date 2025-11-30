@@ -7,6 +7,25 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.3.0] - 2024-11-30
+
+### Added
+- **Time Signature Support**: New `--meter` option for 4/4, 3/4, and 2/4 time signatures with natural accent patterns
+- **Humanize Mode**: New `--humanize` option (0.0-1.0) adds ghost notes and timing variation for authentic human feel
+- **Ghost Notes**: Subtle snare hits (velocity 25-50) on weak subdivisions ("e" and "a" positions)
+- **Timing Variation**: Random timing offsets (±15ms) scaled by humanize amount
+- **Meter-Aware Accents**: Automatic velocity accents based on time signature (waltz, march, standard patterns)
+
+### Changed
+- **Output Filenames**: Now include meter and humanized suffix for better organization
+- **CLI Interface**: Added `--meter` and `--humanize` parameters to both generate commands
+- **Documentation**: Comprehensive README updates with full examples for all new features
+
+### Technical
+- **Ghost Note Algorithm**: Fibonacci-influenced probability with position-based velocity scaling
+- **Accent System**: Per-step velocity multipliers based on musical meter conventions
+- **Non-Repetitive Ghosts**: 70% bar-to-bar variation to avoid mechanical repetition
+
 ## [1.2.0] - 2024-12-17
 
 ### Added

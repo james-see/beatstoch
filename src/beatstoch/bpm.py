@@ -63,7 +63,7 @@ def _pick_best_bpm(
 
         # Extract BPM values from the text
         bpm_candidates = []
-        for match in re.finditer(r'\b(\d{2,3})\b', text_norm):
+        for match in re.finditer(r"\b(\d{2,3})\b", text_norm):
             bpm_val = int(match.group(1))
             if 40 <= bpm_val <= 220:
                 bpm_candidates.append(float(bpm_val))
@@ -91,7 +91,7 @@ def _pick_best_bpm(
                 score += 2.0
 
         # Prefer rows without remix/edit/mix/dub/extended
-        if not re.search(r'\b(remix|edit|mix|dub|extended)\b', text_norm):
+        if not re.search(r"\b(remix|edit|mix|dub|extended)\b", text_norm):
             score += 0.5
 
         if score > best_score:
@@ -115,7 +115,10 @@ def fetch_bpm_from_bpmdatabase(
     if artist:
         try:
             if verbose:
-                print(f"beatstoch: querying BPMDatabase for '{song_title}' by '{artist}'", file=sys.stderr)
+                print(
+                    f"beatstoch: querying BPMDatabase for '{song_title}' by '{artist}'",
+                    file=sys.stderr,
+                )
             resp = requests.get(
                 "https://www.bpmdatabase.com/music/search/",
                 params={"artist": artist, "title": song_title, "bpm": "", "genre": ""},
@@ -129,7 +132,10 @@ def fetch_bpm_from_bpmdatabase(
             )
             if bpm is not None:
                 if verbose:
-                    print(f"beatstoch: found BPM {bpm} for '{song_title}' by '{artist}'", file=sys.stderr)
+                    print(
+                        f"beatstoch: found BPM {bpm} for '{song_title}' by '{artist}'",
+                        file=sys.stderr,
+                    )
                 return bpm
         except requests.RequestException as e:
             print(
@@ -140,7 +146,10 @@ def fetch_bpm_from_bpmdatabase(
     # Fallback: title-only search via search.asp (NO trailing slash)
     try:
         if verbose:
-            print(f"beatstoch: falling back to title-only search for '{song_title}'", file=sys.stderr)
+            print(
+                f"beatstoch: falling back to title-only search for '{song_title}'",
+                file=sys.stderr,
+            )
         resp2 = requests.get(
             "https://www.bpmdatabase.com/search.asp",
             params={"title": song_title},
@@ -150,10 +159,15 @@ def fetch_bpm_from_bpmdatabase(
         resp2.raise_for_status()
         rows2 = _parse_rows(resp2.text)
         bpm = _pick_best_bpm(
-            rows2, _normalize_text(song_title), _normalize_text(artist) if artist else None
+            rows2,
+            _normalize_text(song_title),
+            _normalize_text(artist) if artist else None,
         )
         if bpm is not None and verbose:
-            print(f"beatstoch: found BPM {bpm} from fallback search for '{song_title}'", file=sys.stderr)
+            print(
+                f"beatstoch: found BPM {bpm} from fallback search for '{song_title}'",
+                file=sys.stderr,
+            )
         return bpm
     except requests.RequestException as e:
         print(

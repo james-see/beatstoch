@@ -12,6 +12,8 @@
 - **BPM Database Integration**: Automatically looks up song BPM from [BPM Database](https://www.bpmdatabase.com/)
 - **Psychoacoustic Algorithm**: Research-based rhythms using golden ratio, Fibonacci sequences, and fractal complexity
 - **Multiple Styles**: House, breaks, and generic drum patterns with natural human feel
+- **Time Signatures**: Support for 4/4, 3/4, and 2/4 meters with natural accent patterns
+- **Humanize Mode**: Ghost notes and timing variation for authentic human feel
 - **Stochastic Generation**: Creates varied, probabilistic drum patterns with optimal predictability vs surprise balance
 - **Golden Ratio Microtiming**: Microtiming variations (20-30ms) for authentic groove perception
 - **Natural Velocity Curves**: Sine wave-based dynamics for expressive, human-like drum hits
@@ -49,6 +51,37 @@ uv run beatstoch generate-bpm 127 --bars 4 --style breaks
 uv run beatstoch generate "Billie Jean" --artist "Michael Jackson" --verbose
 ```
 
+#### Humanize Examples
+
+Add ghost notes and timing variation for a more human feel:
+```bash
+# Subtle humanization (0.3) - light ghost notes
+uv run beatstoch generate-bpm 120 --humanize 0.3 --style house
+
+# Medium humanization (0.6) - noticeable ghost notes and timing variation
+uv run beatstoch generate-bpm 128 --humanize 0.6 --style breaks
+
+# Full humanization (1.0) - maximum ghost notes and timing drift
+uv run beatstoch generate "Take Five" --artist "Dave Brubeck" --humanize 1.0
+```
+
+#### Time Signature Examples
+
+Generate patterns in different meters:
+```bash
+# 3/4 waltz time (strong-weak-weak accent pattern)
+uv run beatstoch generate-bpm 90 --meter 3/4 --style generic --bars 8
+
+# 2/4 march feel (strong-weak accent pattern)
+uv run beatstoch generate-bpm 110 --meter 2/4 --humanize 0.5
+
+# 4/4 with humanization (default meter)
+uv run beatstoch generate-bpm 128 --meter 4/4 --humanize 0.7 --style house
+
+# Combine all features: 3/4 jazz waltz with full humanization
+uv run beatstoch generate "Take Five" --artist "Dave Brubeck" --meter 3/4 --humanize 0.8 --fallback-bpm 174
+```
+
 ### Python Library
 
 ```python
@@ -78,6 +111,29 @@ mid2 = generate_stochastic_pattern(
     groove_intensity=0.7
 )
 mid2.save("stoch_127_breaks.mid")
+
+# Generate humanized 3/4 waltz pattern
+mid3 = generate_stochastic_pattern(
+    bpm=90,
+    bars=8,
+    meter=(3, 4),  # 3/4 time signature
+    style="generic",
+    humanize=0.7,  # Add ghost notes and timing variation
+    groove_intensity=0.6
+)
+mid3.save("waltz_90bpm_humanized.mid")
+
+# Generate humanized pattern from song lookup
+mid4, bpm = generate_from_song(
+    "Blue Monday",
+    artist="New Order",
+    bars=16,
+    style="house",
+    meter=(4, 4),
+    humanize=0.5,  # Medium humanization
+    groove_intensity=0.8
+)
+mid4.save(f"blue_monday_{int(bpm)}bpm_humanized.mid")
 ```
 
 ## Command Line Options
@@ -87,6 +143,8 @@ mid2.save("stoch_127_breaks.mid")
 - `--artist`: Artist name (optional, improves BPM lookup accuracy)
 - `--bars`: Number of bars to generate (default: 8)
 - `--style`: Drum style - `house`, `breaks`, or `generic` (default: house)
+- `--meter`: Time signature - `4/4`, `3/4`, or `2/4` (default: 4/4)
+- `--humanize`: Humanization amount 0.0-1.0 - adds ghost notes and timing variation (default: 0.0)
 - `--steps-per-beat`: Resolution (default: 4)
 - `--swing`: Swing amount 0.0-1.0 (default: 0.10)
 - `--intensity`: Pattern density 0.0-1.0 (default: 0.9)
@@ -99,6 +157,8 @@ mid2.save("stoch_127_breaks.mid")
 - `bpm`: Target BPM (required)
 - `--bars`: Number of bars (default: 8)
 - `--style`: Drum style - `house`, `breaks`, or `generic` (default: house)
+- `--meter`: Time signature - `4/4`, `3/4`, or `2/4` (default: 4/4)
+- `--humanize`: Humanization amount 0.0-1.0 - adds ghost notes and timing variation (default: 0.0)
 - `--steps-per-beat`: Resolution (default: 4)
 - `--swing`: Swing amount (default: 0.10)
 - `--intensity`: Pattern density (default: 0.9)
@@ -116,11 +176,51 @@ Syncopated breakbeat patterns using fractal complexity and Fibonacci probability
 ### Generic
 Balanced backbeat pattern with psychoacoustic optimization. Combines predictable structure (85% predictability) with controlled surprise elements for engaging, natural-sounding rhythms suitable for any genre.
 
+## Time Signatures (Meter)
+
+The `--meter` option controls the time signature and affects accent patterns:
+
+| Meter | Feel | Accent Pattern |
+|-------|------|----------------|
+| `4/4` | Standard | Strong - weak - medium - weak |
+| `3/4` | Waltz | Strong - weak - weak |
+| `2/4` | March | Strong - weak |
+
+Each meter automatically adjusts velocity accents to create natural phrasing. Beat 1 is always strongest, with subsequent beats following the traditional accent patterns for each time signature.
+
+## Humanize Mode
+
+The `--humanize` option (0.0-1.0) adds two key elements that make patterns sound less mechanical:
+
+### Ghost Notes
+Subtle snare hits (velocity 25-50) placed on weak subdivisions:
+- **"e" and "a" positions** (in "1 e & a" counting) get higher probability
+- **"&" positions** get lower probability  
+- Ghost notes vary bar-to-bar (70% chance each bar) to avoid repetition
+
+### Timing Variation
+Random timing offsets (±15ms) applied to all notes, scaled by the humanize amount. This mimics the natural timing inconsistencies of human drummers.
+
+**Recommended values:**
+- `0.0` - Machine-perfect timing (default)
+- `0.2-0.4` - Subtle humanization, tight feel
+- `0.5-0.7` - Natural human feel, noticeable ghost notes
+- `0.8-1.0` - Loose, expressive feel with prominent ghost notes
+
 ## Output
 
 Generated MIDI files are saved with descriptive names:
-- `stoch_[artist]_[title]_[bpm]bpm.mid` (from song lookup)
-- `stoch_[bpm]bpm.mid` (from explicit BPM)
+- `stoch_[artist]_[title]_[bpm]bpm_[meter].mid` (from song lookup)
+- `stoch_[artist]_[title]_[bpm]bpm_[meter]_humanized.mid` (with humanize > 0)
+- `stoch_[bpm]bpm_[meter].mid` (from explicit BPM)
+- `stoch_[bpm]bpm_[meter]_humanized.mid` (with humanize > 0)
+
+Example filenames:
+```
+stoch_new_order_blue_monday_130bpm_44.mid
+stoch_dave_brubeck_take_five_174bpm_34_humanized.mid
+stoch_120bpm_44_humanized.mid
+```
 
 Files are compatible with all major DAWs and MIDI software.
 
