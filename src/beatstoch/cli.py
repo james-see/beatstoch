@@ -5,6 +5,48 @@ import sys
 
 from .generator import generate_from_song, generate_stochastic_pattern
 
+EXAMPLES = """\
+Examples:
+  # Generate from song title (BPM auto-detected)
+  beatstoch generate "Billie Jean" --artist "Michael Jackson"
+  beatstoch generate "1979" --artist "Smashing Pumpkins" --bars 16
+
+  # Generate with explicit BPM
+  beatstoch generate-bpm 128 --style house
+  beatstoch generate-bpm 140 --style breaks --bars 16
+
+  # Different time signatures
+  beatstoch generate-bpm 90 --meter 3/4 --style generic    # Waltz
+  beatstoch generate-bpm 110 --meter 2/4                   # March
+
+  # Humanized patterns (ghost notes + timing variation)
+  beatstoch generate-bpm 120 --humanize 0.5                # Medium humanization
+  beatstoch generate-bpm 128 --humanize 0.8 --style breaks # Heavy humanization
+
+  # Combine features
+  beatstoch generate-bpm 90 --meter 3/4 --humanize 0.7 --style generic
+  beatstoch generate "Take Five" --artist "Dave Brubeck" --meter 3/4 --humanize 0.8 --fallback-bpm 174
+"""
+
+GENERATE_EXAMPLES = """\
+Examples:
+  beatstoch generate "Billie Jean" --artist "Michael Jackson"
+  beatstoch generate "1979" --artist "Smashing Pumpkins" --bars 16 --style house
+  beatstoch generate "Blue Monday" --artist "New Order" --humanize 0.6
+  beatstoch generate "Take Five" --artist "Dave Brubeck" --meter 3/4 --humanize 0.8 --fallback-bpm 174
+  beatstoch generate "Around the World" --artist "Daft Punk" --verbose
+"""
+
+GENERATE_BPM_EXAMPLES = """\
+Examples:
+  beatstoch generate-bpm 128                               # Basic house at 128 BPM
+  beatstoch generate-bpm 140 --style breaks --bars 16      # 16 bars of breakbeat
+  beatstoch generate-bpm 90 --meter 3/4 --style generic    # Waltz in 3/4
+  beatstoch generate-bpm 110 --meter 2/4 --humanize 0.5    # Humanized march
+  beatstoch generate-bpm 128 --humanize 0.7 --groove-intensity 0.8  # Full groove
+  beatstoch generate-bpm 174 --style breaks --humanize 0.6 --seed 42  # Reproducible DnB
+"""
+
 
 def parse_meter(value: str) -> tuple:
     """Parse time signature string like '4/4', '3/4', '2/4' into tuple."""
@@ -25,76 +67,131 @@ def main():
     """
     parser = argparse.ArgumentParser(
         prog="beatstoch",
-        description="BPM-aware stochastic drum MIDI generator.",
+        description="BPM-aware stochastic drum MIDI generator with psychoacoustic grooves.",
+        epilog=EXAMPLES,
+        formatter_class=argparse.RawDescriptionHelpFormatter,
     )
-    sub = parser.add_subparsers(dest="cmd", required=True)
+    sub = parser.add_subparsers(dest="cmd")
 
+    # --- generate command ---
     gsong = sub.add_parser(
-        "generate", help="Generate from song title/artist via BPMDatabase."
+        "generate",
+        help="Generate from song title/artist (BPM auto-detected from BPMDatabase)",
+        description="Generate drum pattern by looking up song BPM from BPMDatabase.com",
+        epilog=GENERATE_EXAMPLES,
+        formatter_class=argparse.RawDescriptionHelpFormatter,
     )
-    gsong.add_argument("title")
-    gsong.add_argument("--artist")
-    gsong.add_argument("--bars", type=int, default=8)
+    gsong.add_argument("title", help="Song title to look up")
+    gsong.add_argument("--artist", help="Artist name (improves BPM lookup accuracy)")
     gsong.add_argument(
-        "--style", default="house", choices=["house", "breaks", "generic"]
+        "--bars", type=int, default=8, help="Number of bars (default: 8)"
+    )
+    gsong.add_argument(
+        "--style",
+        default="house",
+        choices=["house", "breaks", "generic"],
+        help="Drum style (default: house)",
     )
     gsong.add_argument(
         "--meter",
         type=parse_meter,
         default=(4, 4),
-        help="Time signature (e.g., '4/4', '3/4', '2/4')",
-    )
-    gsong.add_argument("--steps-per-beat", type=int, default=4)
-    gsong.add_argument("--swing", type=float, default=0.10)
-    gsong.add_argument("--intensity", type=float, default=0.9)
-    gsong.add_argument(
-        "--groove-intensity",
-        type=float,
-        default=0.7,
-        help="Psychoacoustic groove intensity (0.0-1.0)",
+        metavar="X/Y",
+        help="Time signature: 4/4, 3/4, or 2/4 (default: 4/4)",
     )
     gsong.add_argument(
         "--humanize",
         type=float,
         default=0.0,
-        help="Humanize amount (0.0-1.0): adds ghost notes and timing variation",
+        metavar="0.0-1.0",
+        help="Add ghost notes and timing variation (default: 0.0)",
     )
-    gsong.add_argument("--seed", type=int)
-    gsong.add_argument("--fallback-bpm", type=float)
     gsong.add_argument(
-        "--verbose", action="store_true", help="Enable verbose logging for BPM lookup."
+        "--steps-per-beat",
+        type=int,
+        default=4,
+        help="Resolution (default: 4 = 16th notes)",
     )
+    gsong.add_argument(
+        "--swing", type=float, default=0.10, help="Swing amount 0.0-1.0 (default: 0.10)"
+    )
+    gsong.add_argument(
+        "--intensity",
+        type=float,
+        default=0.9,
+        help="Pattern density 0.0-1.0 (default: 0.9)",
+    )
+    gsong.add_argument(
+        "--groove-intensity",
+        type=float,
+        default=0.7,
+        metavar="0.0-1.0",
+        help="Psychoacoustic groove strength (default: 0.7)",
+    )
+    gsong.add_argument("--seed", type=int, help="Random seed for reproducible patterns")
+    gsong.add_argument("--fallback-bpm", type=float, help="BPM to use if lookup fails")
+    gsong.add_argument("--verbose", action="store_true", help="Show BPM lookup details")
 
-    gbpm = sub.add_parser("generate-bpm", help="Generate with explicit BPM.")
-    gbpm.add_argument("bpm", type=float)
-    gbpm.add_argument("--bars", type=int, default=8)
+    # --- generate-bpm command ---
+    gbpm = sub.add_parser(
+        "generate-bpm",
+        help="Generate with explicit BPM (no lookup)",
+        description="Generate drum pattern with specified BPM (no database lookup)",
+        epilog=GENERATE_BPM_EXAMPLES,
+        formatter_class=argparse.RawDescriptionHelpFormatter,
+    )
+    gbpm.add_argument("bpm", type=float, help="Target BPM (e.g., 120, 128, 140)")
+    gbpm.add_argument("--bars", type=int, default=8, help="Number of bars (default: 8)")
     gbpm.add_argument(
-        "--style", default="house", choices=["house", "breaks", "generic"]
+        "--style",
+        default="house",
+        choices=["house", "breaks", "generic"],
+        help="Drum style (default: house)",
     )
     gbpm.add_argument(
         "--meter",
         type=parse_meter,
         default=(4, 4),
-        help="Time signature (e.g., '4/4', '3/4', '2/4')",
-    )
-    gbpm.add_argument("--steps-per-beat", type=int, default=4)
-    gbpm.add_argument("--swing", type=float, default=0.10)
-    gbpm.add_argument("--intensity", type=float, default=0.9)
-    gbpm.add_argument(
-        "--groove-intensity",
-        type=float,
-        default=0.7,
-        help="Psychoacoustic groove intensity (0.0-1.0)",
+        metavar="X/Y",
+        help="Time signature: 4/4, 3/4, or 2/4 (default: 4/4)",
     )
     gbpm.add_argument(
         "--humanize",
         type=float,
         default=0.0,
-        help="Humanize amount (0.0-1.0): adds ghost notes and timing variation",
+        metavar="0.0-1.0",
+        help="Add ghost notes and timing variation (default: 0.0)",
     )
-    gbpm.add_argument("--seed", type=int)
+    gbpm.add_argument(
+        "--steps-per-beat",
+        type=int,
+        default=4,
+        help="Resolution (default: 4 = 16th notes)",
+    )
+    gbpm.add_argument(
+        "--swing", type=float, default=0.10, help="Swing amount 0.0-1.0 (default: 0.10)"
+    )
+    gbpm.add_argument(
+        "--intensity",
+        type=float,
+        default=0.9,
+        help="Pattern density 0.0-1.0 (default: 0.9)",
+    )
+    gbpm.add_argument(
+        "--groove-intensity",
+        type=float,
+        default=0.7,
+        metavar="0.0-1.0",
+        help="Psychoacoustic groove strength (default: 0.7)",
+    )
+    gbpm.add_argument("--seed", type=int, help="Random seed for reproducible patterns")
 
     args = parser.parse_args()
+
+    # If no command provided, print help and exit cleanly
+    if args.cmd is None:
+        parser.print_help()
+        sys.exit(0)
 
     if args.cmd == "generate":
         try:

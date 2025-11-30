@@ -7,6 +7,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.3.3] - 2024-11-30
+
+### Improved
+- **CLI Help**: Added comprehensive examples to all help screens (`beatstoch -h`, `generate -h`, `generate-bpm -h`)
+- **CLI UX**: Running `beatstoch` with no args now shows help instead of error
+- **CLI Options**: Better metavar labels for `--meter`, `--humanize`, `--groove-intensity`
+
 ## [1.3.2] - 2024-11-30
 
 ### Fixed
