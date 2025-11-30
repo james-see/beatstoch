@@ -23,16 +23,26 @@
 
 ## Installation
 
-### Using uv (recommended)
+### Using pip
+```bash
+pip install beatstoch
+```
+
+### Using pipx (recommended for CLI usage)
+```bash
+pipx install beatstoch
+```
+
+### Using uv
+```bash
+uv tool install beatstoch
+```
+
+### Development Installation
 ```bash
 git clone https://github.com/james-see/beatstoch.git
 cd beatstoch
 uv sync
-```
-
-### Using pip
-```bash
-pip install mido numpy requests beautifulsoup4
 ```
 
 ## Quick Start
@@ -42,13 +52,13 @@ pip install mido numpy requests beautifulsoup4
 Generate drum patterns from song titles:
 ```bash
 # Generate 8 bars of house-style drums for "1979" by Smashing Pumpkins
-uv run beatstoch generate "1979" --artist "Smashing Pumpkins" --bars 8
+beatstoch generate "1979" --artist "Smashing Pumpkins" --bars 8
 
 # Generate breaks-style pattern at 127 BPM
-uv run beatstoch generate-bpm 127 --bars 4 --style breaks
+beatstoch generate-bpm 127 --bars 4 --style breaks
 
 # Enable verbose logging to see BPM lookup process
-uv run beatstoch generate "Billie Jean" --artist "Michael Jackson" --verbose
+beatstoch generate "Billie Jean" --artist "Michael Jackson" --verbose
 ```
 
 #### Humanize Examples
@@ -56,13 +66,13 @@ uv run beatstoch generate "Billie Jean" --artist "Michael Jackson" --verbose
 Add ghost notes and timing variation for a more human feel:
 ```bash
 # Subtle humanization (0.3) - light ghost notes
-uv run beatstoch generate-bpm 120 --humanize 0.3 --style house
+beatstoch generate-bpm 120 --humanize 0.3 --style house
 
 # Medium humanization (0.6) - noticeable ghost notes and timing variation
-uv run beatstoch generate-bpm 128 --humanize 0.6 --style breaks
+beatstoch generate-bpm 128 --humanize 0.6 --style breaks
 
 # Full humanization (1.0) - maximum ghost notes and timing drift
-uv run beatstoch generate "Take Five" --artist "Dave Brubeck" --humanize 1.0
+beatstoch generate "Take Five" --artist "Dave Brubeck" --humanize 1.0
 ```
 
 #### Time Signature Examples
@@ -70,16 +80,16 @@ uv run beatstoch generate "Take Five" --artist "Dave Brubeck" --humanize 1.0
 Generate patterns in different meters:
 ```bash
 # 3/4 waltz time (strong-weak-weak accent pattern)
-uv run beatstoch generate-bpm 90 --meter 3/4 --style generic --bars 8
+beatstoch generate-bpm 90 --meter 3/4 --style generic --bars 8
 
 # 2/4 march feel (strong-weak accent pattern)
-uv run beatstoch generate-bpm 110 --meter 2/4 --humanize 0.5
+beatstoch generate-bpm 110 --meter 2/4 --humanize 0.5
 
 # 4/4 with humanization (default meter)
-uv run beatstoch generate-bpm 128 --meter 4/4 --humanize 0.7 --style house
+beatstoch generate-bpm 128 --meter 4/4 --humanize 0.7 --style house
 
 # Combine all features: 3/4 jazz waltz with full humanization
-uv run beatstoch generate "Take Five" --artist "Dave Brubeck" --meter 3/4 --humanize 0.8 --fallback-bpm 174
+beatstoch generate "Take Five" --artist "Dave Brubeck" --meter 3/4 --humanize 0.8 --fallback-bpm 174
 ```
 
 ### Python Library

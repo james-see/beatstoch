@@ -7,6 +7,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.3.2] - 2024-11-30
+
+### Fixed
+- **README**: Fixed installation section - now shows `pip install beatstoch` and `pipx install beatstoch`
+- **README**: Updated CLI examples to not use `uv run` prefix (for installed package usage)
+
 ## [1.3.1] - 2024-11-30
 
 ### Fixed
