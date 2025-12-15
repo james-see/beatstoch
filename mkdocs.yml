@@ -1,56 +1,81 @@
 # MkDocs configuration for GitHub Pages
 
-site_name: beatstoch Documentation
+site_name: beatstoch
 site_url: https://james-see.github.io/beatstoch/
-site_description: BPM-aware stochastic drum MIDI generator
-site_author: Your Name
+site_description: Stochastic drum MIDI generator with BPM detection
+site_author: James Campbell
 
 # Repository
 repo_url: https://github.com/james-see/beatstoch
 repo_name: james-see/beatstoch
-edit_uri: edit/main/docs/
+edit_uri: ""
 
 # Theme configuration
 theme:
   name: material
   palette:
-    primary: blue
-    accent: blue
+    - scheme: slate
+      primary: deep purple
+      accent: amber
+      toggle:
+        icon: material/brightness-4
+        name: Switch to light mode
+    - scheme: default
+      primary: deep purple
+      accent: amber
+      toggle:
+        icon: material/brightness-7
+        name: Switch to dark mode
+  font:
+    text: Inter
+    code: JetBrains Mono
   features:
+    - navigation.instant
+    - navigation.tracking
     - navigation.tabs
     - navigation.sections
-    - navigation.expand
+    - navigation.top
     - search.suggest
     - search.highlight
-    - content.footnote.tooltips
-    - header.autohide
+    - content.tabs.link
+    - content.code.copy
+    - content.code.annotate
   icon:
     repo: fontawesome/brands/github
+    logo: material/drum
 
 # Navigation structure
 nav:
   - Home: index.md
-  - User Guide: user-guide.md
-  - API Reference: api-reference.md
-  - Developer Guide: developer-guide.md
+  - Documentation:
+    - User Guide: user-guide.md
+    - API Reference: api-reference.md
+    - Developer Guide: developer-guide.md
 
 # Markdown extensions
 markdown_extensions:
   - admonition
-  - codehilite:
-      guess_lang: false
+  - attr_list
+  - md_in_html
+  - def_list
   - footnotes
   - meta
+  - tables
   - toc:
       permalink: true
   - pymdownx.arithmatex:
       generic: true
+  - pymdownx.betterem
   - pymdownx.caret
   - pymdownx.critic
   - pymdownx.details
   - pymdownx.emoji:
-      emoji_generator: !!python/name:pymdownx.emoji.to_svg
-      emoji_index: !!python/name:pymdownx.emoji.twemoji
+      emoji_index: !!python/name:material.extensions.emoji.twemoji
+      emoji_generator: !!python/name:material.extensions.emoji.to_svg
+  - pymdownx.highlight:
+      anchor_linenums: true
+      line_spans: __span
+      pygments_lang_class: true
   - pymdownx.inlinehilite
   - pymdownx.keys
   - pymdownx.mark
@@ -69,8 +94,10 @@ markdown_extensions:
 # Plugins
 plugins:
   - search
-  - minify:
-      minify_html: true
+
+# Extra CSS
+extra_css:
+  - stylesheets/extra.css
 
 # Customization
 extra:
@@ -79,6 +106,7 @@ extra:
       link: https://github.com/james-see/beatstoch
     - icon: fontawesome/brands/python
       link: https://pypi.org/project/beatstoch/
+  generator: false
 
 # Copyright
 copyright: Released into the public domain under the Unlicense
