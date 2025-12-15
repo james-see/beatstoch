@@ -1,0 +1,2312 @@
+
+<!doctype html>
+<html lang="en" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+        <meta name="description" content="Stochastic drum MIDI generator with BPM detection">
+      
+      
+        <meta name="author" content="James Campbell">
+      
+      
+        <link rel="canonical" href="https://james-see.github.io/beatstoch/user-guide/">
+      
+      
+        <link rel="prev" href="..">
+      
+      
+        <link rel="next" href="../api-reference/">
+      
+      
+        
+      
+      
+      <link rel="icon" href="../assets/images/favicon.png">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.7.0">
+    
+    
+      
+        <title>User Guide - beatstoch</title>
+      
+    
+    
+      <link rel="stylesheet" href="../assets/stylesheets/main.618322db.min.css">
+      
+        
+        <link rel="stylesheet" href="../assets/stylesheets/palette.ab4e12ef.min.css">
+      
+      
+
+
+    
+    
+      
+    
+    
+      
+        
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Inter:300,300i,400,400i,700,700i%7CJetBrains+Mono:400,400i,700,700i&display=fallback">
+        <style>:root{--md-text-font:"Inter";--md-code-font:"JetBrains Mono"}</style>
+      
+    
+    
+      <link rel="stylesheet" href="../stylesheets/extra.css">
+    
+    <script>__md_scope=new URL("..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    
+      
+
+    
+    
+  </head>
+  
+  
+    
+    
+      
+    
+    
+    
+    
+    <body dir="ltr" data-md-color-scheme="slate" data-md-color-primary="deep-purple" data-md-color-accent="amber">
+  
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#user-guide" class="md-skip">
+          Skip to content
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+    
+      
+
+<header class="md-header" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="Header">
+    <a href=".." title="beatstoch" class="md-header__button md-logo" aria-label="beatstoch" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M16 9V7h-4v5.5c-.42-.31-.93-.5-1.5-.5A2.5 2.5 0 0 0 8 14.5a2.5 2.5 0 0 0 2.5 2.5 2.5 2.5 0 0 0 2.5-2.5V9zm-4-7a10 10 0 0 1 10 10 10 10 0 0 1-10 10A10 10 0 0 1 2 12 10 10 0 0 1 12 2"/></svg>
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"/></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            beatstoch
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              User Guide
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+      
+        <form class="md-header__option" data-md-component="palette">
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="" data-md-color-scheme="slate" data-md-color-primary="deep-purple" data-md-color-accent="amber"  aria-label="Switch to light mode"  type="radio" name="__palette" id="__palette_0">
+    
+      <label class="md-header__button md-icon" title="Switch to light mode" for="__palette_1" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 18c-.89 0-1.74-.2-2.5-.55C11.56 16.5 13 14.42 13 12s-1.44-4.5-3.5-5.45C10.26 6.2 11.11 6 12 6a6 6 0 0 1 6 6 6 6 0 0 1-6 6m8-9.31V4h-4.69L12 .69 8.69 4H4v4.69L.69 12 4 15.31V20h4.69L12 23.31 15.31 20H20v-4.69L23.31 12z"/></svg>
+      </label>
+    
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="" data-md-color-scheme="default" data-md-color-primary="deep-purple" data-md-color-accent="amber"  aria-label="Switch to dark mode"  type="radio" name="__palette" id="__palette_1">
+    
+      <label class="md-header__button md-icon" title="Switch to dark mode" for="__palette_0" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a4 4 0 0 0-4 4 4 4 0 0 0 4 4 4 4 0 0 0 4-4 4 4 0 0 0-4-4m0 10a6 6 0 0 1-6-6 6 6 0 0 1 6-6 6 6 0 0 1 6 6 6 6 0 0 1-6 6m8-9.31V4h-4.69L12 .69 8.69 4H4v4.69L.69 12 4 15.31V20h4.69L12 23.31 15.31 20H20v-4.69L23.31 12z"/></svg>
+      </label>
+    
+  
+</form>
+      
+    
+    
+      <script>var palette=__md_get("__palette");if(palette&&palette.color){if("(prefers-color-scheme)"===palette.color.media){var media=matchMedia("(prefers-color-scheme: light)"),input=document.querySelector(media.matches?"[data-md-color-media='(prefers-color-scheme: light)']":"[data-md-color-media='(prefers-color-scheme: dark)']");palette.color.media=input.getAttribute("data-md-color-media"),palette.color.scheme=input.getAttribute("data-md-color-scheme"),palette.color.primary=input.getAttribute("data-md-color-primary"),palette.color.accent=input.getAttribute("data-md-color-accent")}for(var[key,value]of Object.entries(palette.color))document.body.setAttribute("data-md-color-"+key,value)}</script>
+    
+    
+    
+      
+      
+        <label class="md-header__button md-icon" for="__search">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        </label>
+        <div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" aria-label="Search" placeholder="Search" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required>
+      <label class="md-search__icon md-icon" for="__search">
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+      </label>
+      <nav class="md-search__options" aria-label="Search">
+        
+        <button type="reset" class="md-search__icon md-icon" title="Clear" aria-label="Clear" tabindex="-1">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
+        </button>
+      </nav>
+      
+        <div class="md-search__suggest" data-md-component="search-suggest"></div>
+      
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" tabindex="0" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="search-result">
+          <div class="md-search-result__meta">
+            Initializing search
+          </div>
+          <ol class="md-search-result__list" role="presentation"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+      
+    
+    
+      <div class="md-header__source">
+        <a href="https://github.com/james-see/beatstoch" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M173.9 397.4c0 2-2.3 3.6-5.2 3.6-3.3.3-5.6-1.3-5.6-3.6 0-2 2.3-3.6 5.2-3.6 3-.3 5.6 1.3 5.6 3.6m-31.1-4.5c-.7 2 1.3 4.3 4.3 4.9 2.6 1 5.6 0 6.2-2s-1.3-4.3-4.3-5.2c-2.6-.7-5.5.3-6.2 2.3m44.2-1.7c-2.9.7-4.9 2.6-4.6 4.9.3 2 2.9 3.3 5.9 2.6 2.9-.7 4.9-2.6 4.6-4.6-.3-1.9-3-3.2-5.9-2.9M252.8 8C114.1 8 8 113.3 8 252c0 110.9 69.8 205.8 169.5 239.2 12.8 2.3 17.3-5.6 17.3-12.1 0-6.2-.3-40.4-.3-61.4 0 0-70 15-84.7-29.8 0 0-11.4-29.1-27.8-36.6 0 0-22.9-15.7 1.6-15.4 0 0 24.9 2 38.6 25.8 21.9 38.6 58.6 27.5 72.9 20.9 2.3-16 8.8-27.1 16-33.7-55.9-6.2-112.3-14.3-112.3-110.5 0-27.5 7.6-41.3 23.6-58.9-2.6-6.5-11.1-33.3 2.6-67.9 20.9-6.5 69 27 69 27 20-5.6 41.5-8.5 62.8-8.5s42.8 2.9 62.8 8.5c0 0 48.1-33.6 69-27 13.7 34.7 5.2 61.4 2.6 67.9 16 17.7 25.8 31.5 25.8 58.9 0 96.5-58.9 104.2-114.8 110.5 9.2 7.9 17 22.9 17 46.4 0 33.7-.3 75.4-.3 83.6 0 6.5 4.6 14.4 17.3 12.1C436.2 457.8 504 362.9 504 252 504 113.3 391.5 8 252.8 8M105.2 352.9c-1.3 1-1 3.3.7 5.2 1.6 1.6 3.9 2.3 5.2 1 1.3-1 1-3.3-.7-5.2-1.6-1.6-3.9-2.3-5.2-1m-10.8-8.1c-.7 1.3.3 2.9 2.3 3.9 1.6 1 3.6.7 4.3-.7.7-1.3-.3-2.9-2.3-3.9-2-.6-3.6-.3-4.3.7m32.4 35.6c-1.6 1.3-1 4.3 1.3 6.2 2.3 2.3 5.2 2.6 6.5 1 1.3-1.3.7-4.3-1.3-6.2-2.2-2.3-5.2-2.6-6.5-1m-11.4-14.7c-1.6 1-1.6 3.6 0 5.9s4.3 3.3 5.6 2.3c1.6-1.3 1.6-3.9 0-6.2-1.4-2.3-4-3.3-5.6-2"/></svg>
+  </div>
+  <div class="md-source__repository">
+    james-see/beatstoch
+  </div>
+</a>
+      </div>
+    
+  </nav>
+  
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+          
+            
+<nav class="md-tabs" aria-label="Tabs" data-md-component="tabs">
+  <div class="md-grid">
+    <ul class="md-tabs__list">
+      
+        
+  
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href=".." class="md-tabs__link">
+        
+  
+  
+    
+  
+  Home
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+    
+  
+  
+    
+    
+      <li class="md-tabs__item md-tabs__item--active">
+        <a href="./" class="md-tabs__link">
+          
+  
+  
+  Documentation
+
+        </a>
+      </li>
+    
+  
+
+      
+    </ul>
+  </div>
+</nav>
+          
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+  
+
+
+<nav class="md-nav md-nav--primary md-nav--lifted" aria-label="Navigation" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href=".." title="beatstoch" class="md-nav__button md-logo" aria-label="beatstoch" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M16 9V7h-4v5.5c-.42-.31-.93-.5-1.5-.5A2.5 2.5 0 0 0 8 14.5a2.5 2.5 0 0 0 2.5 2.5 2.5 2.5 0 0 0 2.5-2.5V9zm-4-7a10 10 0 0 1 10 10 10 10 0 0 1-10 10A10 10 0 0 1 2 12 10 10 0 0 1 12 2"/></svg>
+
+    </a>
+    beatstoch
+  </label>
+  
+    <div class="md-nav__source">
+      <a href="https://github.com/james-see/beatstoch" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M173.9 397.4c0 2-2.3 3.6-5.2 3.6-3.3.3-5.6-1.3-5.6-3.6 0-2 2.3-3.6 5.2-3.6 3-.3 5.6 1.3 5.6 3.6m-31.1-4.5c-.7 2 1.3 4.3 4.3 4.9 2.6 1 5.6 0 6.2-2s-1.3-4.3-4.3-5.2c-2.6-.7-5.5.3-6.2 2.3m44.2-1.7c-2.9.7-4.9 2.6-4.6 4.9.3 2 2.9 3.3 5.9 2.6 2.9-.7 4.9-2.6 4.6-4.6-.3-1.9-3-3.2-5.9-2.9M252.8 8C114.1 8 8 113.3 8 252c0 110.9 69.8 205.8 169.5 239.2 12.8 2.3 17.3-5.6 17.3-12.1 0-6.2-.3-40.4-.3-61.4 0 0-70 15-84.7-29.8 0 0-11.4-29.1-27.8-36.6 0 0-22.9-15.7 1.6-15.4 0 0 24.9 2 38.6 25.8 21.9 38.6 58.6 27.5 72.9 20.9 2.3-16 8.8-27.1 16-33.7-55.9-6.2-112.3-14.3-112.3-110.5 0-27.5 7.6-41.3 23.6-58.9-2.6-6.5-11.1-33.3 2.6-67.9 20.9-6.5 69 27 69 27 20-5.6 41.5-8.5 62.8-8.5s42.8 2.9 62.8 8.5c0 0 48.1-33.6 69-27 13.7 34.7 5.2 61.4 2.6 67.9 16 17.7 25.8 31.5 25.8 58.9 0 96.5-58.9 104.2-114.8 110.5 9.2 7.9 17 22.9 17 46.4 0 33.7-.3 75.4-.3 83.6 0 6.5 4.6 14.4 17.3 12.1C436.2 457.8 504 362.9 504 252 504 113.3 391.5 8 252.8 8M105.2 352.9c-1.3 1-1 3.3.7 5.2 1.6 1.6 3.9 2.3 5.2 1 1.3-1 1-3.3-.7-5.2-1.6-1.6-3.9-2.3-5.2-1m-10.8-8.1c-.7 1.3.3 2.9 2.3 3.9 1.6 1 3.6.7 4.3-.7.7-1.3-.3-2.9-2.3-3.9-2-.6-3.6-.3-4.3.7m32.4 35.6c-1.6 1.3-1 4.3 1.3 6.2 2.3 2.3 5.2 2.6 6.5 1 1.3-1.3.7-4.3-1.3-6.2-2.2-2.3-5.2-2.6-6.5-1m-11.4-14.7c-1.6 1-1.6 3.6 0 5.9s4.3 3.3 5.6 2.3c1.6-1.3 1.6-3.9 0-6.2-1.4-2.3-4-3.3-5.6-2"/></svg>
+  </div>
+  <div class="md-source__repository">
+    james-see/beatstoch
+  </div>
+</a>
+    </div>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href=".." class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Home
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+    
+  
+  
+  
+    
+    
+    
+    
+      
+        
+        
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_2" checked>
+        
+          
+          <label class="md-nav__link" for="__nav_2" id="__nav_2_label" tabindex="">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Documentation
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_2_label" aria-expanded="true">
+          <label class="md-nav__title" for="__nav_2">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Documentation
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+    
+  
+  
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    User Guide
+  
+
+    
+  </span>
+  
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    User Guide
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#installation" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Installation
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Installation">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#using-pip-recommended" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Using pip (recommended)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#using-uv" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Using uv
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#development-installation" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Development Installation
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#command-line-interface" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Command Line Interface
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Command Line Interface">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#basic-usage" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Basic Usage
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Basic Usage">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#generate-from-song-title" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Generate from Song Title
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#generate-with-explicit-bpm" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Generate with Explicit BPM
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#all-command-line-options" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        All Command Line Options
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="All Command Line Options">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#generate-command-song-lookup" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        generate Command (Song Lookup)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#generate-bpm-command-explicit-bpm" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        generate-bpm Command (Explicit BPM)
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#time-signatures-meter" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Time Signatures (Meter)
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#humanize-mode" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Humanize Mode
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#python-library" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Python Library
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Python Library">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#basic-usage_1" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Basic Usage
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#advanced-usage" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Advanced Usage
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#function-signatures" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Function Signatures
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Function Signatures">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#generate_from_song" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        generate_from_song()
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#generate_stochastic_pattern" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        generate_stochastic_pattern()
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#drum-styles" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Drum Styles
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Drum Styles">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#house-style" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        House Style
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#breaks-style" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Breaks Style
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#rock-style" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Rock Style
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#blues-style" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Blues Style
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#indie-style" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Indie Style
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#jazz-style" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Jazz Style
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#generic-style" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Generic Style
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#gm-drum-map-reference" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        GM Drum Map Reference
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="GM Drum Map Reference">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#kicks-notes-35-36" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Kicks (Notes 35-36)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#snares-claps-notes-37-40" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Snares &amp; Claps (Notes 37-40)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#hi-hats-notes-42-44-46" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Hi-Hats (Notes 42, 44, 46)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#cymbals-notes-49-59" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Cymbals (Notes 49-59)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#toms-notes-41-50" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Toms (Notes 41-50)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#percussion-notes-54-77" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Percussion (Notes 54-77)
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#output-files" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Output Files
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#troubleshooting" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Troubleshooting
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Troubleshooting">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#bpm-lookup-issues" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        BPM Lookup Issues
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#midi-issues" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        MIDI Issues
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#common-errors" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Common Errors
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#examples-by-genre" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Examples by Genre
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Examples by Genre">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#electronichouse" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Electronic/House
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#hip-hoptrap" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Hip-Hop/Trap
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#drum-bass" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Drum &amp; Bass
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#general-purpose" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        General Purpose
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../api-reference/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    API Reference
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../developer-guide/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Developer Guide
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#installation" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Installation
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Installation">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#using-pip-recommended" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Using pip (recommended)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#using-uv" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Using uv
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#development-installation" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Development Installation
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#command-line-interface" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Command Line Interface
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Command Line Interface">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#basic-usage" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Basic Usage
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Basic Usage">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#generate-from-song-title" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Generate from Song Title
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#generate-with-explicit-bpm" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Generate with Explicit BPM
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#all-command-line-options" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        All Command Line Options
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="All Command Line Options">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#generate-command-song-lookup" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        generate Command (Song Lookup)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#generate-bpm-command-explicit-bpm" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        generate-bpm Command (Explicit BPM)
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#time-signatures-meter" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Time Signatures (Meter)
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#humanize-mode" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Humanize Mode
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#python-library" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Python Library
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Python Library">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#basic-usage_1" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Basic Usage
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#advanced-usage" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Advanced Usage
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#function-signatures" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Function Signatures
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Function Signatures">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#generate_from_song" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        generate_from_song()
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#generate_stochastic_pattern" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        generate_stochastic_pattern()
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#drum-styles" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Drum Styles
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Drum Styles">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#house-style" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        House Style
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#breaks-style" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Breaks Style
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#rock-style" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Rock Style
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#blues-style" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Blues Style
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#indie-style" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Indie Style
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#jazz-style" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Jazz Style
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#generic-style" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Generic Style
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#gm-drum-map-reference" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        GM Drum Map Reference
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="GM Drum Map Reference">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#kicks-notes-35-36" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Kicks (Notes 35-36)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#snares-claps-notes-37-40" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Snares &amp; Claps (Notes 37-40)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#hi-hats-notes-42-44-46" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Hi-Hats (Notes 42, 44, 46)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#cymbals-notes-49-59" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Cymbals (Notes 49-59)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#toms-notes-41-50" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Toms (Notes 41-50)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#percussion-notes-54-77" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Percussion (Notes 54-77)
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#output-files" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Output Files
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#troubleshooting" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Troubleshooting
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Troubleshooting">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#bpm-lookup-issues" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        BPM Lookup Issues
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#midi-issues" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        MIDI Issues
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#common-errors" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Common Errors
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#examples-by-genre" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Examples by Genre
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Examples by Genre">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#electronichouse" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Electronic/House
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#hip-hoptrap" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Hip-Hop/Trap
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#drum-bass" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Drum &amp; Bass
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#general-purpose" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        General Purpose
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          
+            <div class="md-content" data-md-component="content">
+              
+              <article class="md-content__inner md-typeset">
+                
+                  
+
+
+
+<h1 id="user-guide">User Guide<a class="headerlink" href="#user-guide" title="Permanent link">&para;</a></h1>
+<p>Complete guide for using beatstoch to generate drum patterns.</p>
+<h2 id="installation">Installation<a class="headerlink" href="#installation" title="Permanent link">&para;</a></h2>
+<h3 id="using-pip-recommended">Using pip (recommended)<a class="headerlink" href="#using-pip-recommended" title="Permanent link">&para;</a></h3>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a>pip<span class="w"> </span>install<span class="w"> </span>beatstoch
+</span></code></pre></div>
+<h3 id="using-uv">Using uv<a class="headerlink" href="#using-uv" title="Permanent link">&para;</a></h3>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-1-1"><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a>uv<span class="w"> </span>add<span class="w"> </span>beatstoch
+</span></code></pre></div>
+<h3 id="development-installation">Development Installation<a class="headerlink" href="#development-installation" title="Permanent link">&para;</a></h3>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-2-1"><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a>git<span class="w"> </span>clone<span class="w"> </span>&lt;repository-url&gt;
+</span><span id="__span-2-2"><a id="__codelineno-2-2" name="__codelineno-2-2" href="#__codelineno-2-2"></a><span class="nb">cd</span><span class="w"> </span>beatstoch
+</span><span id="__span-2-3"><a id="__codelineno-2-3" name="__codelineno-2-3" href="#__codelineno-2-3"></a>uv<span class="w"> </span>sync
+</span></code></pre></div>
+<h2 id="command-line-interface">Command Line Interface<a class="headerlink" href="#command-line-interface" title="Permanent link">&para;</a></h2>
+<h3 id="basic-usage">Basic Usage<a class="headerlink" href="#basic-usage" title="Permanent link">&para;</a></h3>
+<h4 id="generate-from-song-title">Generate from Song Title<a class="headerlink" href="#generate-from-song-title" title="Permanent link">&para;</a></h4>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-3-1"><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a><span class="c1"># Simple usage - just song title</span>
+</span><span id="__span-3-2"><a id="__codelineno-3-2" name="__codelineno-3-2" href="#__codelineno-3-2"></a>beatstoch<span class="w"> </span>generate<span class="w"> </span><span class="s2">&quot;Billie Jean&quot;</span>
+</span><span id="__span-3-3"><a id="__codelineno-3-3" name="__codelineno-3-3" href="#__codelineno-3-3"></a>
+</span><span id="__span-3-4"><a id="__codelineno-3-4" name="__codelineno-3-4" href="#__codelineno-3-4"></a><span class="c1"># With artist for better BPM accuracy</span>
+</span><span id="__span-3-5"><a id="__codelineno-3-5" name="__codelineno-3-5" href="#__codelineno-3-5"></a>beatstoch<span class="w"> </span>generate<span class="w"> </span><span class="s2">&quot;1979&quot;</span><span class="w"> </span>--artist<span class="w"> </span><span class="s2">&quot;Smashing Pumpkins&quot;</span>
+</span><span id="__span-3-6"><a id="__codelineno-3-6" name="__codelineno-3-6" href="#__codelineno-3-6"></a>
+</span><span id="__span-3-7"><a id="__codelineno-3-7" name="__codelineno-3-7" href="#__codelineno-3-7"></a><span class="c1"># Custom number of bars</span>
+</span><span id="__span-3-8"><a id="__codelineno-3-8" name="__codelineno-3-8" href="#__codelineno-3-8"></a>beatstoch<span class="w"> </span>generate<span class="w"> </span><span class="s2">&quot;Around the World&quot;</span><span class="w"> </span>--artist<span class="w"> </span><span class="s2">&quot;Daft Punk&quot;</span><span class="w"> </span>--bars<span class="w"> </span><span class="m">16</span>
+</span></code></pre></div>
+<h4 id="generate-with-explicit-bpm">Generate with Explicit BPM<a class="headerlink" href="#generate-with-explicit-bpm" title="Permanent link">&para;</a></h4>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-4-1"><a id="__codelineno-4-1" name="__codelineno-4-1" href="#__codelineno-4-1"></a><span class="c1"># House style at 128 BPM</span>
+</span><span id="__span-4-2"><a id="__codelineno-4-2" name="__codelineno-4-2" href="#__codelineno-4-2"></a>beatstoch<span class="w"> </span>generate-bpm<span class="w"> </span><span class="m">128</span><span class="w"> </span>--style<span class="w"> </span>house<span class="w"> </span>--bars<span class="w"> </span><span class="m">8</span>
+</span><span id="__span-4-3"><a id="__codelineno-4-3" name="__codelineno-4-3" href="#__codelineno-4-3"></a>
+</span><span id="__span-4-4"><a id="__codelineno-4-4" name="__codelineno-4-4" href="#__codelineno-4-4"></a><span class="c1"># Breaks style with custom settings</span>
+</span><span id="__span-4-5"><a id="__codelineno-4-5" name="__codelineno-4-5" href="#__codelineno-4-5"></a>beatstoch<span class="w"> </span>generate-bpm<span class="w"> </span><span class="m">174</span><span class="w"> </span>--style<span class="w"> </span>breaks<span class="w"> </span>--bars<span class="w"> </span><span class="m">32</span><span class="w"> </span>--swing<span class="w"> </span><span class="m">0</span>.15<span class="w"> </span>--intensity<span class="w"> </span><span class="m">0</span>.8
+</span></code></pre></div>
+<h3 id="all-command-line-options">All Command Line Options<a class="headerlink" href="#all-command-line-options" title="Permanent link">&para;</a></h3>
+<h4 id="generate-command-song-lookup"><code>generate</code> Command (Song Lookup)<a class="headerlink" href="#generate-command-song-lookup" title="Permanent link">&para;</a></h4>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-5-1"><a id="__codelineno-5-1" name="__codelineno-5-1" href="#__codelineno-5-1"></a>beatstoch<span class="w"> </span>generate<span class="w"> </span><span class="o">[</span>OPTIONS<span class="o">]</span><span class="w"> </span>TITLE
+</span><span id="__span-5-2"><a id="__codelineno-5-2" name="__codelineno-5-2" href="#__codelineno-5-2"></a>
+</span><span id="__span-5-3"><a id="__codelineno-5-3" name="__codelineno-5-3" href="#__codelineno-5-3"></a>Options:
+</span><span id="__span-5-4"><a id="__codelineno-5-4" name="__codelineno-5-4" href="#__codelineno-5-4"></a><span class="w">  </span>--artist<span class="w"> </span>TEXT<span class="w">          </span>Artist<span class="w"> </span>name<span class="w"> </span><span class="o">(</span>improves<span class="w"> </span>BPM<span class="w"> </span>lookup<span class="w"> </span>accuracy<span class="o">)</span>
+</span><span id="__span-5-5"><a id="__codelineno-5-5" name="__codelineno-5-5" href="#__codelineno-5-5"></a><span class="w">  </span>--bars<span class="w"> </span>INTEGER<span class="w">         </span>Number<span class="w"> </span>of<span class="w"> </span>bars<span class="w"> </span>to<span class="w"> </span>generate<span class="w"> </span><span class="o">(</span>default:<span class="w"> </span><span class="m">8</span><span class="o">)</span>
+</span><span id="__span-5-6"><a id="__codelineno-5-6" name="__codelineno-5-6" href="#__codelineno-5-6"></a><span class="w">  </span>--style<span class="w"> </span><span class="o">[</span>house<span class="p">|</span>breaks<span class="p">|</span>generic<span class="o">]</span><span class="w">  </span>Drum<span class="w"> </span>style<span class="w"> </span><span class="o">(</span>default:<span class="w"> </span>house<span class="o">)</span>
+</span><span id="__span-5-7"><a id="__codelineno-5-7" name="__codelineno-5-7" href="#__codelineno-5-7"></a><span class="w">  </span>--meter<span class="w"> </span>TEXT<span class="w">           </span>Time<span class="w"> </span>signature<span class="w"> </span>e.g.<span class="w"> </span><span class="s1">&#39;4/4&#39;</span>,<span class="w"> </span><span class="s1">&#39;3/4&#39;</span>,<span class="w"> </span><span class="s1">&#39;2/4&#39;</span><span class="w"> </span><span class="o">(</span>default:<span class="w"> </span><span class="m">4</span>/4<span class="o">)</span>
+</span><span id="__span-5-8"><a id="__codelineno-5-8" name="__codelineno-5-8" href="#__codelineno-5-8"></a><span class="w">  </span>--humanize<span class="w"> </span>FLOAT<span class="w">       </span>Humanization<span class="w"> </span><span class="m">0</span>.0-1.0:<span class="w"> </span>adds<span class="w"> </span>ghost<span class="w"> </span>notes<span class="w"> </span>and<span class="w"> </span>timing<span class="w"> </span>variation<span class="w"> </span><span class="o">(</span>default:<span class="w"> </span><span class="m">0</span>.0<span class="o">)</span>
+</span><span id="__span-5-9"><a id="__codelineno-5-9" name="__codelineno-5-9" href="#__codelineno-5-9"></a><span class="w">  </span>--steps-per-beat<span class="w"> </span>INTEGER<span class="w">        </span>Resolution<span class="w"> </span><span class="o">(</span>default:<span class="w"> </span><span class="m">4</span><span class="o">)</span>
+</span><span id="__span-5-10"><a id="__codelineno-5-10" name="__codelineno-5-10" href="#__codelineno-5-10"></a><span class="w">  </span>--swing<span class="w"> </span>FLOAT<span class="w">          </span>Swing<span class="w"> </span>amount<span class="w"> </span><span class="m">0</span>.0-1.0<span class="w"> </span><span class="o">(</span>default:<span class="w"> </span><span class="m">0</span>.10<span class="o">)</span>
+</span><span id="__span-5-11"><a id="__codelineno-5-11" name="__codelineno-5-11" href="#__codelineno-5-11"></a><span class="w">  </span>--intensity<span class="w"> </span>FLOAT<span class="w">      </span>Pattern<span class="w"> </span>density<span class="w"> </span><span class="m">0</span>.0-1.0<span class="w"> </span><span class="o">(</span>default:<span class="w"> </span><span class="m">0</span>.9<span class="o">)</span>
+</span><span id="__span-5-12"><a id="__codelineno-5-12" name="__codelineno-5-12" href="#__codelineno-5-12"></a><span class="w">  </span>--groove-intensity<span class="w"> </span>FLOAT<span class="w">        </span>Psychoacoustic<span class="w"> </span>groove<span class="w"> </span>strength<span class="w"> </span><span class="m">0</span>.0-1.0<span class="w"> </span><span class="o">(</span>default:<span class="w"> </span><span class="m">0</span>.7<span class="o">)</span>
+</span><span id="__span-5-13"><a id="__codelineno-5-13" name="__codelineno-5-13" href="#__codelineno-5-13"></a><span class="w">  </span>--seed<span class="w"> </span>INTEGER<span class="w">         </span>Random<span class="w"> </span>seed<span class="w"> </span><span class="k">for</span><span class="w"> </span>reproducible<span class="w"> </span>patterns
+</span><span id="__span-5-14"><a id="__codelineno-5-14" name="__codelineno-5-14" href="#__codelineno-5-14"></a><span class="w">  </span>--fallback-bpm<span class="w"> </span>FLOAT<span class="w">   </span>BPM<span class="w"> </span>to<span class="w"> </span>use<span class="w"> </span><span class="k">if</span><span class="w"> </span>lookup<span class="w"> </span>fails
+</span><span id="__span-5-15"><a id="__codelineno-5-15" name="__codelineno-5-15" href="#__codelineno-5-15"></a><span class="w">  </span>--verbose<span class="w">             </span>Show<span class="w"> </span>BPM<span class="w"> </span>lookup<span class="w"> </span>details
+</span><span id="__span-5-16"><a id="__codelineno-5-16" name="__codelineno-5-16" href="#__codelineno-5-16"></a><span class="w">  </span>-h,<span class="w"> </span>--help<span class="w">            </span>Show<span class="w"> </span>this<span class="w"> </span>message<span class="w"> </span>and<span class="w"> </span><span class="nb">exit</span>
+</span></code></pre></div>
+<h4 id="generate-bpm-command-explicit-bpm"><code>generate-bpm</code> Command (Explicit BPM)<a class="headerlink" href="#generate-bpm-command-explicit-bpm" title="Permanent link">&para;</a></h4>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-6-1"><a id="__codelineno-6-1" name="__codelineno-6-1" href="#__codelineno-6-1"></a>beatstoch<span class="w"> </span>generate-bpm<span class="w"> </span><span class="o">[</span>OPTIONS<span class="o">]</span><span class="w"> </span>BPM
+</span><span id="__span-6-2"><a id="__codelineno-6-2" name="__codelineno-6-2" href="#__codelineno-6-2"></a>
+</span><span id="__span-6-3"><a id="__codelineno-6-3" name="__codelineno-6-3" href="#__codelineno-6-3"></a>Options:
+</span><span id="__span-6-4"><a id="__codelineno-6-4" name="__codelineno-6-4" href="#__codelineno-6-4"></a><span class="w">  </span>--bars<span class="w"> </span>INTEGER<span class="w">         </span>Number<span class="w"> </span>of<span class="w"> </span>bars<span class="w"> </span><span class="o">(</span>default:<span class="w"> </span><span class="m">8</span><span class="o">)</span>
+</span><span id="__span-6-5"><a id="__codelineno-6-5" name="__codelineno-6-5" href="#__codelineno-6-5"></a><span class="w">  </span>--style<span class="w"> </span><span class="o">[</span>house<span class="p">|</span>breaks<span class="p">|</span>generic<span class="o">]</span><span class="w">  </span>Drum<span class="w"> </span>style<span class="w"> </span><span class="o">(</span>default:<span class="w"> </span>house<span class="o">)</span>
+</span><span id="__span-6-6"><a id="__codelineno-6-6" name="__codelineno-6-6" href="#__codelineno-6-6"></a><span class="w">  </span>--meter<span class="w"> </span>TEXT<span class="w">           </span>Time<span class="w"> </span>signature<span class="w"> </span>e.g.<span class="w"> </span><span class="s1">&#39;4/4&#39;</span>,<span class="w"> </span><span class="s1">&#39;3/4&#39;</span>,<span class="w"> </span><span class="s1">&#39;2/4&#39;</span><span class="w"> </span><span class="o">(</span>default:<span class="w"> </span><span class="m">4</span>/4<span class="o">)</span>
+</span><span id="__span-6-7"><a id="__codelineno-6-7" name="__codelineno-6-7" href="#__codelineno-6-7"></a><span class="w">  </span>--humanize<span class="w"> </span>FLOAT<span class="w">       </span>Humanization<span class="w"> </span><span class="m">0</span>.0-1.0:<span class="w"> </span>adds<span class="w"> </span>ghost<span class="w"> </span>notes<span class="w"> </span>and<span class="w"> </span>timing<span class="w"> </span>variation<span class="w"> </span><span class="o">(</span>default:<span class="w"> </span><span class="m">0</span>.0<span class="o">)</span>
+</span><span id="__span-6-8"><a id="__codelineno-6-8" name="__codelineno-6-8" href="#__codelineno-6-8"></a><span class="w">  </span>--steps-per-beat<span class="w"> </span>INTEGER<span class="w">        </span>Resolution<span class="w"> </span><span class="o">(</span>default:<span class="w"> </span><span class="m">4</span><span class="o">)</span>
+</span><span id="__span-6-9"><a id="__codelineno-6-9" name="__codelineno-6-9" href="#__codelineno-6-9"></a><span class="w">  </span>--swing<span class="w"> </span>FLOAT<span class="w">          </span>Swing<span class="w"> </span>amount<span class="w"> </span><span class="o">(</span>default:<span class="w"> </span><span class="m">0</span>.10<span class="o">)</span>
+</span><span id="__span-6-10"><a id="__codelineno-6-10" name="__codelineno-6-10" href="#__codelineno-6-10"></a><span class="w">  </span>--intensity<span class="w"> </span>FLOAT<span class="w">      </span>Pattern<span class="w"> </span>density<span class="w"> </span><span class="o">(</span>default:<span class="w"> </span><span class="m">0</span>.9<span class="o">)</span>
+</span><span id="__span-6-11"><a id="__codelineno-6-11" name="__codelineno-6-11" href="#__codelineno-6-11"></a><span class="w">  </span>--groove-intensity<span class="w"> </span>FLOAT<span class="w">        </span>Psychoacoustic<span class="w"> </span>groove<span class="w"> </span>strength<span class="w"> </span><span class="m">0</span>.0-1.0<span class="w"> </span><span class="o">(</span>default:<span class="w"> </span><span class="m">0</span>.7<span class="o">)</span>
+</span><span id="__span-6-12"><a id="__codelineno-6-12" name="__codelineno-6-12" href="#__codelineno-6-12"></a><span class="w">  </span>--seed<span class="w"> </span>INTEGER<span class="w">         </span>Random<span class="w"> </span>seed
+</span><span id="__span-6-13"><a id="__codelineno-6-13" name="__codelineno-6-13" href="#__codelineno-6-13"></a><span class="w">  </span>-h,<span class="w"> </span>--help<span class="w">            </span>Show<span class="w"> </span>this<span class="w"> </span>message<span class="w"> </span>and<span class="w"> </span><span class="nb">exit</span>
+</span></code></pre></div>
+<h2 id="time-signatures-meter">Time Signatures (Meter)<a class="headerlink" href="#time-signatures-meter" title="Permanent link">&para;</a></h2>
+<p>The <code>--meter</code> option sets the time signature with natural accent patterns:</p>
+<table>
+<thead>
+<tr>
+<th>Meter</th>
+<th>Feel</th>
+<th>Accent Pattern</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>4/4</code></td>
+<td>Standard</td>
+<td>Strong - weak - medium - weak</td>
+</tr>
+<tr>
+<td><code>3/4</code></td>
+<td>Waltz</td>
+<td>Strong - weak - weak</td>
+</tr>
+<tr>
+<td><code>2/4</code></td>
+<td>March</td>
+<td>Strong - weak</td>
+</tr>
+</tbody>
+</table>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-7-1"><a id="__codelineno-7-1" name="__codelineno-7-1" href="#__codelineno-7-1"></a><span class="c1"># Waltz in 3/4</span>
+</span><span id="__span-7-2"><a id="__codelineno-7-2" name="__codelineno-7-2" href="#__codelineno-7-2"></a>beatstoch<span class="w"> </span>generate-bpm<span class="w"> </span><span class="m">90</span><span class="w"> </span>--meter<span class="w"> </span><span class="m">3</span>/4<span class="w"> </span>--style<span class="w"> </span>generic
+</span><span id="__span-7-3"><a id="__codelineno-7-3" name="__codelineno-7-3" href="#__codelineno-7-3"></a>
+</span><span id="__span-7-4"><a id="__codelineno-7-4" name="__codelineno-7-4" href="#__codelineno-7-4"></a><span class="c1"># March in 2/4</span>
+</span><span id="__span-7-5"><a id="__codelineno-7-5" name="__codelineno-7-5" href="#__codelineno-7-5"></a>beatstoch<span class="w"> </span>generate-bpm<span class="w"> </span><span class="m">110</span><span class="w"> </span>--meter<span class="w"> </span><span class="m">2</span>/4<span class="w"> </span>--humanize<span class="w"> </span><span class="m">0</span>.5
+</span></code></pre></div>
+<h2 id="humanize-mode">Humanize Mode<a class="headerlink" href="#humanize-mode" title="Permanent link">&para;</a></h2>
+<p>The <code>--humanize</code> option (0.0-1.0) makes patterns sound less mechanical:</p>
+<p><strong>Ghost Notes</strong>: Subtle snare hits (velocity 25-50) on weak subdivisions
+<strong>Timing Variation</strong>: Random ±15ms offsets scaled by humanize amount</p>
+<p>Recommended values:
+- <code>0.0</code> - Machine-perfect timing (default)
+- <code>0.2-0.4</code> - Subtle humanization, tight feel
+- <code>0.5-0.7</code> - Natural human feel, noticeable ghost notes
+- <code>0.8-1.0</code> - Loose, expressive feel with prominent ghost notes</p>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-8-1"><a id="__codelineno-8-1" name="__codelineno-8-1" href="#__codelineno-8-1"></a><span class="c1"># Subtle humanization</span>
+</span><span id="__span-8-2"><a id="__codelineno-8-2" name="__codelineno-8-2" href="#__codelineno-8-2"></a>beatstoch<span class="w"> </span>generate-bpm<span class="w"> </span><span class="m">128</span><span class="w"> </span>--humanize<span class="w"> </span><span class="m">0</span>.3
+</span><span id="__span-8-3"><a id="__codelineno-8-3" name="__codelineno-8-3" href="#__codelineno-8-3"></a>
+</span><span id="__span-8-4"><a id="__codelineno-8-4" name="__codelineno-8-4" href="#__codelineno-8-4"></a><span class="c1"># Natural feel</span>
+</span><span id="__span-8-5"><a id="__codelineno-8-5" name="__codelineno-8-5" href="#__codelineno-8-5"></a>beatstoch<span class="w"> </span>generate-bpm<span class="w"> </span><span class="m">120</span><span class="w"> </span>--humanize<span class="w"> </span><span class="m">0</span>.6<span class="w"> </span>--style<span class="w"> </span>house
+</span><span id="__span-8-6"><a id="__codelineno-8-6" name="__codelineno-8-6" href="#__codelineno-8-6"></a>
+</span><span id="__span-8-7"><a id="__codelineno-8-7" name="__codelineno-8-7" href="#__codelineno-8-7"></a><span class="c1"># Full humanization</span>
+</span><span id="__span-8-8"><a id="__codelineno-8-8" name="__codelineno-8-8" href="#__codelineno-8-8"></a>beatstoch<span class="w"> </span>generate-bpm<span class="w"> </span><span class="m">90</span><span class="w"> </span>--meter<span class="w"> </span><span class="m">3</span>/4<span class="w"> </span>--humanize<span class="w"> </span><span class="m">1</span>.0
+</span></code></pre></div>
+<h2 id="python-library">Python Library<a class="headerlink" href="#python-library" title="Permanent link">&para;</a></h2>
+<h3 id="basic-usage_1">Basic Usage<a class="headerlink" href="#basic-usage_1" title="Permanent link">&para;</a></h3>
+<div class="language-python highlight"><pre><span></span><code><span id="__span-9-1"><a id="__codelineno-9-1" name="__codelineno-9-1" href="#__codelineno-9-1"></a><span class="kn">from</span><span class="w"> </span><span class="nn">beatstoch</span><span class="w"> </span><span class="kn">import</span> <span class="n">generate_from_song</span><span class="p">,</span> <span class="n">generate_stochastic_pattern</span>
+</span><span id="__span-9-2"><a id="__codelineno-9-2" name="__codelineno-9-2" href="#__codelineno-9-2"></a>
+</span><span id="__span-9-3"><a id="__codelineno-9-3" name="__codelineno-9-3" href="#__codelineno-9-3"></a><span class="c1"># Generate from song lookup</span>
+</span><span id="__span-9-4"><a id="__codelineno-9-4" name="__codelineno-9-4" href="#__codelineno-9-4"></a><span class="n">midi_file</span><span class="p">,</span> <span class="n">bpm</span> <span class="o">=</span> <span class="n">generate_from_song</span><span class="p">(</span><span class="s2">&quot;1979&quot;</span><span class="p">,</span> <span class="n">artist</span><span class="o">=</span><span class="s2">&quot;Smashing Pumpkins&quot;</span><span class="p">)</span>
+</span><span id="__span-9-5"><a id="__codelineno-9-5" name="__codelineno-9-5" href="#__codelineno-9-5"></a><span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Found BPM: </span><span class="si">{</span><span class="n">bpm</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+</span><span id="__span-9-6"><a id="__codelineno-9-6" name="__codelineno-9-6" href="#__codelineno-9-6"></a><span class="n">midi_file</span><span class="o">.</span><span class="n">save</span><span class="p">(</span><span class="s2">&quot;drums.mid&quot;</span><span class="p">)</span>
+</span><span id="__span-9-7"><a id="__codelineno-9-7" name="__codelineno-9-7" href="#__codelineno-9-7"></a>
+</span><span id="__span-9-8"><a id="__codelineno-9-8" name="__codelineno-9-8" href="#__codelineno-9-8"></a><span class="c1"># Generate with explicit BPM</span>
+</span><span id="__span-9-9"><a id="__codelineno-9-9" name="__codelineno-9-9" href="#__codelineno-9-9"></a><span class="n">midi_file</span> <span class="o">=</span> <span class="n">generate_stochastic_pattern</span><span class="p">(</span><span class="n">bpm</span><span class="o">=</span><span class="mi">127</span><span class="p">,</span> <span class="n">bars</span><span class="o">=</span><span class="mi">8</span><span class="p">,</span> <span class="n">style</span><span class="o">=</span><span class="s2">&quot;house&quot;</span><span class="p">)</span>
+</span><span id="__span-9-10"><a id="__codelineno-9-10" name="__codelineno-9-10" href="#__codelineno-9-10"></a><span class="n">midi_file</span><span class="o">.</span><span class="n">save</span><span class="p">(</span><span class="s2">&quot;house_drums.mid&quot;</span><span class="p">)</span>
+</span></code></pre></div>
+<h3 id="advanced-usage">Advanced Usage<a class="headerlink" href="#advanced-usage" title="Permanent link">&para;</a></h3>
+<div class="language-python highlight"><pre><span></span><code><span id="__span-10-1"><a id="__codelineno-10-1" name="__codelineno-10-1" href="#__codelineno-10-1"></a><span class="kn">from</span><span class="w"> </span><span class="nn">beatstoch</span><span class="w"> </span><span class="kn">import</span> <span class="n">generate_from_song</span><span class="p">,</span> <span class="n">generate_stochastic_pattern</span>
+</span><span id="__span-10-2"><a id="__codelineno-10-2" name="__codelineno-10-2" href="#__codelineno-10-2"></a>
+</span><span id="__span-10-3"><a id="__codelineno-10-3" name="__codelineno-10-3" href="#__codelineno-10-3"></a><span class="c1"># Song lookup with full customization</span>
+</span><span id="__span-10-4"><a id="__codelineno-10-4" name="__codelineno-10-4" href="#__codelineno-10-4"></a><span class="n">midi_file</span><span class="p">,</span> <span class="n">bpm</span> <span class="o">=</span> <span class="n">generate_from_song</span><span class="p">(</span>
+</span><span id="__span-10-5"><a id="__codelineno-10-5" name="__codelineno-10-5" href="#__codelineno-10-5"></a>    <span class="n">song_title</span><span class="o">=</span><span class="s2">&quot;Billie Jean&quot;</span><span class="p">,</span>
+</span><span id="__span-10-6"><a id="__codelineno-10-6" name="__codelineno-10-6" href="#__codelineno-10-6"></a>    <span class="n">artist</span><span class="o">=</span><span class="s2">&quot;Michael Jackson&quot;</span><span class="p">,</span>
+</span><span id="__span-10-7"><a id="__codelineno-10-7" name="__codelineno-10-7" href="#__codelineno-10-7"></a>    <span class="n">bars</span><span class="o">=</span><span class="mi">16</span><span class="p">,</span>                    <span class="c1"># 16 bars long</span>
+</span><span id="__span-10-8"><a id="__codelineno-10-8" name="__codelineno-10-8" href="#__codelineno-10-8"></a>    <span class="n">style</span><span class="o">=</span><span class="s2">&quot;breaks&quot;</span><span class="p">,</span>             <span class="c1"># Breakbeat style</span>
+</span><span id="__span-10-9"><a id="__codelineno-10-9" name="__codelineno-10-9" href="#__codelineno-10-9"></a>    <span class="n">meter</span><span class="o">=</span><span class="p">(</span><span class="mi">4</span><span class="p">,</span> <span class="mi">4</span><span class="p">),</span>               <span class="c1"># Time signature</span>
+</span><span id="__span-10-10"><a id="__codelineno-10-10" name="__codelineno-10-10" href="#__codelineno-10-10"></a>    <span class="n">steps_per_beat</span><span class="o">=</span><span class="mi">4</span><span class="p">,</span>           <span class="c1"># 16th note resolution</span>
+</span><span id="__span-10-11"><a id="__codelineno-10-11" name="__codelineno-10-11" href="#__codelineno-10-11"></a>    <span class="n">swing</span><span class="o">=</span><span class="mf">0.12</span><span class="p">,</span>                 <span class="c1"># Light swing</span>
+</span><span id="__span-10-12"><a id="__codelineno-10-12" name="__codelineno-10-12" href="#__codelineno-10-12"></a>    <span class="n">intensity</span><span class="o">=</span><span class="mf">0.85</span><span class="p">,</span>             <span class="c1"># Dense pattern</span>
+</span><span id="__span-10-13"><a id="__codelineno-10-13" name="__codelineno-10-13" href="#__codelineno-10-13"></a>    <span class="n">groove_intensity</span><span class="o">=</span><span class="mf">0.8</span><span class="p">,</span>       <span class="c1"># Psychoacoustic groove</span>
+</span><span id="__span-10-14"><a id="__codelineno-10-14" name="__codelineno-10-14" href="#__codelineno-10-14"></a>    <span class="n">humanize</span><span class="o">=</span><span class="mf">0.5</span><span class="p">,</span>               <span class="c1"># Ghost notes and timing variation</span>
+</span><span id="__span-10-15"><a id="__codelineno-10-15" name="__codelineno-10-15" href="#__codelineno-10-15"></a>    <span class="n">seed</span><span class="o">=</span><span class="mi">42</span><span class="p">,</span>                    <span class="c1"># Reproducible</span>
+</span><span id="__span-10-16"><a id="__codelineno-10-16" name="__codelineno-10-16" href="#__codelineno-10-16"></a>    <span class="n">fallback_bpm</span><span class="o">=</span><span class="mi">120</span>            <span class="c1"># Fallback if lookup fails</span>
+</span><span id="__span-10-17"><a id="__codelineno-10-17" name="__codelineno-10-17" href="#__codelineno-10-17"></a><span class="p">)</span>
+</span><span id="__span-10-18"><a id="__codelineno-10-18" name="__codelineno-10-18" href="#__codelineno-10-18"></a>
+</span><span id="__span-10-19"><a id="__codelineno-10-19" name="__codelineno-10-19" href="#__codelineno-10-19"></a><span class="c1"># Explicit BPM with full control</span>
+</span><span id="__span-10-20"><a id="__codelineno-10-20" name="__codelineno-10-20" href="#__codelineno-10-20"></a><span class="n">midi_file</span> <span class="o">=</span> <span class="n">generate_stochastic_pattern</span><span class="p">(</span>
+</span><span id="__span-10-21"><a id="__codelineno-10-21" name="__codelineno-10-21" href="#__codelineno-10-21"></a>    <span class="n">bpm</span><span class="o">=</span><span class="mi">174</span><span class="p">,</span>
+</span><span id="__span-10-22"><a id="__codelineno-10-22" name="__codelineno-10-22" href="#__codelineno-10-22"></a>    <span class="n">bars</span><span class="o">=</span><span class="mi">32</span><span class="p">,</span>
+</span><span id="__span-10-23"><a id="__codelineno-10-23" name="__codelineno-10-23" href="#__codelineno-10-23"></a>    <span class="n">meter</span><span class="o">=</span><span class="p">(</span><span class="mi">4</span><span class="p">,</span> <span class="mi">4</span><span class="p">),</span>               <span class="c1"># Time signature</span>
+</span><span id="__span-10-24"><a id="__codelineno-10-24" name="__codelineno-10-24" href="#__codelineno-10-24"></a>    <span class="n">steps_per_beat</span><span class="o">=</span><span class="mi">8</span><span class="p">,</span>           <span class="c1"># 32nd note resolution</span>
+</span><span id="__span-10-25"><a id="__codelineno-10-25" name="__codelineno-10-25" href="#__codelineno-10-25"></a>    <span class="n">swing</span><span class="o">=</span><span class="mf">0.08</span><span class="p">,</span>                 <span class="c1"># Subtle swing</span>
+</span><span id="__span-10-26"><a id="__codelineno-10-26" name="__codelineno-10-26" href="#__codelineno-10-26"></a>    <span class="n">intensity</span><span class="o">=</span><span class="mf">0.7</span><span class="p">,</span>              <span class="c1"># Sparse pattern</span>
+</span><span id="__span-10-27"><a id="__codelineno-10-27" name="__codelineno-10-27" href="#__codelineno-10-27"></a>    <span class="n">groove_intensity</span><span class="o">=</span><span class="mf">0.7</span><span class="p">,</span>       <span class="c1"># Psychoacoustic groove</span>
+</span><span id="__span-10-28"><a id="__codelineno-10-28" name="__codelineno-10-28" href="#__codelineno-10-28"></a>    <span class="n">humanize</span><span class="o">=</span><span class="mf">0.6</span><span class="p">,</span>               <span class="c1"># Humanization</span>
+</span><span id="__span-10-29"><a id="__codelineno-10-29" name="__codelineno-10-29" href="#__codelineno-10-29"></a>    <span class="n">seed</span><span class="o">=</span><span class="mi">123</span><span class="p">,</span>
+</span><span id="__span-10-30"><a id="__codelineno-10-30" name="__codelineno-10-30" href="#__codelineno-10-30"></a>    <span class="n">style</span><span class="o">=</span><span class="s2">&quot;generic&quot;</span>             <span class="c1"># All-purpose style</span>
+</span><span id="__span-10-31"><a id="__codelineno-10-31" name="__codelineno-10-31" href="#__codelineno-10-31"></a><span class="p">)</span>
+</span><span id="__span-10-32"><a id="__codelineno-10-32" name="__codelineno-10-32" href="#__codelineno-10-32"></a>
+</span><span id="__span-10-33"><a id="__codelineno-10-33" name="__codelineno-10-33" href="#__codelineno-10-33"></a><span class="n">midi_file</span><span class="o">.</span><span class="n">save</span><span class="p">(</span><span class="s2">&quot;complex_pattern.mid&quot;</span><span class="p">)</span>
+</span><span id="__span-10-34"><a id="__codelineno-10-34" name="__codelineno-10-34" href="#__codelineno-10-34"></a>
+</span><span id="__span-10-35"><a id="__codelineno-10-35" name="__codelineno-10-35" href="#__codelineno-10-35"></a><span class="c1"># Humanized 3/4 waltz</span>
+</span><span id="__span-10-36"><a id="__codelineno-10-36" name="__codelineno-10-36" href="#__codelineno-10-36"></a><span class="n">midi_file</span> <span class="o">=</span> <span class="n">generate_stochastic_pattern</span><span class="p">(</span>
+</span><span id="__span-10-37"><a id="__codelineno-10-37" name="__codelineno-10-37" href="#__codelineno-10-37"></a>    <span class="n">bpm</span><span class="o">=</span><span class="mi">90</span><span class="p">,</span>
+</span><span id="__span-10-38"><a id="__codelineno-10-38" name="__codelineno-10-38" href="#__codelineno-10-38"></a>    <span class="n">bars</span><span class="o">=</span><span class="mi">8</span><span class="p">,</span>
+</span><span id="__span-10-39"><a id="__codelineno-10-39" name="__codelineno-10-39" href="#__codelineno-10-39"></a>    <span class="n">meter</span><span class="o">=</span><span class="p">(</span><span class="mi">3</span><span class="p">,</span> <span class="mi">4</span><span class="p">),</span>               <span class="c1"># Waltz time</span>
+</span><span id="__span-10-40"><a id="__codelineno-10-40" name="__codelineno-10-40" href="#__codelineno-10-40"></a>    <span class="n">humanize</span><span class="o">=</span><span class="mf">0.8</span><span class="p">,</span>               <span class="c1"># Heavy ghost notes</span>
+</span><span id="__span-10-41"><a id="__codelineno-10-41" name="__codelineno-10-41" href="#__codelineno-10-41"></a>    <span class="n">style</span><span class="o">=</span><span class="s2">&quot;generic&quot;</span>
+</span><span id="__span-10-42"><a id="__codelineno-10-42" name="__codelineno-10-42" href="#__codelineno-10-42"></a><span class="p">)</span>
+</span><span id="__span-10-43"><a id="__codelineno-10-43" name="__codelineno-10-43" href="#__codelineno-10-43"></a><span class="n">midi_file</span><span class="o">.</span><span class="n">save</span><span class="p">(</span><span class="s2">&quot;waltz_humanized.mid&quot;</span><span class="p">)</span>
+</span></code></pre></div>
+<h3 id="function-signatures">Function Signatures<a class="headerlink" href="#function-signatures" title="Permanent link">&para;</a></h3>
+<h4 id="generate_from_song"><code>generate_from_song()</code><a class="headerlink" href="#generate_from_song" title="Permanent link">&para;</a></h4>
+<div class="language-python highlight"><pre><span></span><code><span id="__span-11-1"><a id="__codelineno-11-1" name="__codelineno-11-1" href="#__codelineno-11-1"></a><span class="n">generate_from_song</span><span class="p">(</span>
+</span><span id="__span-11-2"><a id="__codelineno-11-2" name="__codelineno-11-2" href="#__codelineno-11-2"></a>    <span class="n">song_title</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+</span><span id="__span-11-3"><a id="__codelineno-11-3" name="__codelineno-11-3" href="#__codelineno-11-3"></a>    <span class="n">artist</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+</span><span id="__span-11-4"><a id="__codelineno-11-4" name="__codelineno-11-4" href="#__codelineno-11-4"></a>    <span class="n">bars</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">8</span><span class="p">,</span>
+</span><span id="__span-11-5"><a id="__codelineno-11-5" name="__codelineno-11-5" href="#__codelineno-11-5"></a>    <span class="n">style</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;house&quot;</span><span class="p">,</span>
+</span><span id="__span-11-6"><a id="__codelineno-11-6" name="__codelineno-11-6" href="#__codelineno-11-6"></a>    <span class="n">meter</span><span class="p">:</span> <span class="n">Tuple</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span><span class="mi">4</span><span class="p">,</span> <span class="mi">4</span><span class="p">),</span>
+</span><span id="__span-11-7"><a id="__codelineno-11-7" name="__codelineno-11-7" href="#__codelineno-11-7"></a>    <span class="n">steps_per_beat</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">4</span><span class="p">,</span>
+</span><span id="__span-11-8"><a id="__codelineno-11-8" name="__codelineno-11-8" href="#__codelineno-11-8"></a>    <span class="n">swing</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">0.10</span><span class="p">,</span>
+</span><span id="__span-11-9"><a id="__codelineno-11-9" name="__codelineno-11-9" href="#__codelineno-11-9"></a>    <span class="n">intensity</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">0.9</span><span class="p">,</span>
+</span><span id="__span-11-10"><a id="__codelineno-11-10" name="__codelineno-11-10" href="#__codelineno-11-10"></a>    <span class="n">groove_intensity</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">0.7</span><span class="p">,</span>
+</span><span id="__span-11-11"><a id="__codelineno-11-11" name="__codelineno-11-11" href="#__codelineno-11-11"></a>    <span class="n">humanize</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">0.0</span><span class="p">,</span>
+</span><span id="__span-11-12"><a id="__codelineno-11-12" name="__codelineno-11-12" href="#__codelineno-11-12"></a>    <span class="n">seed</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+</span><span id="__span-11-13"><a id="__codelineno-11-13" name="__codelineno-11-13" href="#__codelineno-11-13"></a>    <span class="n">fallback_bpm</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">float</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+</span><span id="__span-11-14"><a id="__codelineno-11-14" name="__codelineno-11-14" href="#__codelineno-11-14"></a>    <span class="n">verbose</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
+</span><span id="__span-11-15"><a id="__codelineno-11-15" name="__codelineno-11-15" href="#__codelineno-11-15"></a><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Tuple</span><span class="p">[</span><span class="n">MidiFile</span><span class="p">,</span> <span class="nb">float</span><span class="p">]</span>
+</span></code></pre></div>
+<p><strong>Returns:</strong> Tuple of (MIDI file object, detected BPM)</p>
+<h4 id="generate_stochastic_pattern"><code>generate_stochastic_pattern()</code><a class="headerlink" href="#generate_stochastic_pattern" title="Permanent link">&para;</a></h4>
+<div class="language-python highlight"><pre><span></span><code><span id="__span-12-1"><a id="__codelineno-12-1" name="__codelineno-12-1" href="#__codelineno-12-1"></a><span class="n">generate_stochastic_pattern</span><span class="p">(</span>
+</span><span id="__span-12-2"><a id="__codelineno-12-2" name="__codelineno-12-2" href="#__codelineno-12-2"></a>    <span class="n">bpm</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span>
+</span><span id="__span-12-3"><a id="__codelineno-12-3" name="__codelineno-12-3" href="#__codelineno-12-3"></a>    <span class="n">bars</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">4</span><span class="p">,</span>
+</span><span id="__span-12-4"><a id="__codelineno-12-4" name="__codelineno-12-4" href="#__codelineno-12-4"></a>    <span class="n">meter</span><span class="p">:</span> <span class="n">Tuple</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span><span class="mi">4</span><span class="p">,</span> <span class="mi">4</span><span class="p">),</span>
+</span><span id="__span-12-5"><a id="__codelineno-12-5" name="__codelineno-12-5" href="#__codelineno-12-5"></a>    <span class="n">steps_per_beat</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">4</span><span class="p">,</span>
+</span><span id="__span-12-6"><a id="__codelineno-12-6" name="__codelineno-12-6" href="#__codelineno-12-6"></a>    <span class="n">swing</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">0.12</span><span class="p">,</span>
+</span><span id="__span-12-7"><a id="__codelineno-12-7" name="__codelineno-12-7" href="#__codelineno-12-7"></a>    <span class="n">intensity</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">0.9</span><span class="p">,</span>
+</span><span id="__span-12-8"><a id="__codelineno-12-8" name="__codelineno-12-8" href="#__codelineno-12-8"></a>    <span class="n">seed</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">42</span><span class="p">,</span>
+</span><span id="__span-12-9"><a id="__codelineno-12-9" name="__codelineno-12-9" href="#__codelineno-12-9"></a>    <span class="n">style</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;house&quot;</span><span class="p">,</span>
+</span><span id="__span-12-10"><a id="__codelineno-12-10" name="__codelineno-12-10" href="#__codelineno-12-10"></a>    <span class="n">groove_intensity</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">0.7</span><span class="p">,</span>
+</span><span id="__span-12-11"><a id="__codelineno-12-11" name="__codelineno-12-11" href="#__codelineno-12-11"></a>    <span class="n">humanize</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">0.0</span><span class="p">,</span>
+</span><span id="__span-12-12"><a id="__codelineno-12-12" name="__codelineno-12-12" href="#__codelineno-12-12"></a><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">MidiFile</span>
+</span></code></pre></div>
+<p><strong>Returns:</strong> MIDI file object</p>
+<h2 id="drum-styles">Drum Styles<a class="headerlink" href="#drum-styles" title="Permanent link">&para;</a></h2>
+<h3 id="house-style">House Style<a class="headerlink" href="#house-style" title="Permanent link">&para;</a></h3>
+<ul>
+<li>Four-on-the-floor kick on every beat</li>
+<li>Snare/clap layered on beats 2 and 4</li>
+<li>Driving hi-hat patterns with open hat accents</li>
+<li>Crash cymbal on bar 1 every 4 bars</li>
+<li>Best for: House, techno, EDM, minimal</li>
+</ul>
+<h3 id="breaks-style">Breaks Style<a class="headerlink" href="#breaks-style" title="Permanent link">&para;</a></h3>
+<ul>
+<li>Syncopated kick pattern (steps 0, 6, 8, 14)</li>
+<li>Snare on beats 2 and 4 with ghost notes</li>
+<li>Complex hi-hat patterns</li>
+<li>Best for: Breakbeat, drum &amp; bass, hip-hop, jungle</li>
+</ul>
+<h3 id="rock-style">Rock Style<a class="headerlink" href="#rock-style" title="Permanent link">&para;</a></h3>
+<ul>
+<li>Kick on beats 1 and 3 with pickup notes</li>
+<li>Strong snare backbeat on 2 and 4</li>
+<li>Driving 8<sup>th</sup> note hi-hats</li>
+<li>Open hat accents on upbeats</li>
+<li>Crash cymbal accents, ride bell on beat 1</li>
+<li>Best for: Rock, alternative, punk, metal</li>
+</ul>
+<h3 id="blues-style">Blues Style<a class="headerlink" href="#blues-style" title="Permanent link">&para;</a></h3>
+<ul>
+<li>Shuffle feel (approximated triplet groove)</li>
+<li>Kick on beats with shuffle "and"</li>
+<li>Snare on 2 and 4 with ghost notes</li>
+<li>Ride cymbal shuffle pattern (not hi-hats)</li>
+<li>Pedal hi-hat on 2 and 4</li>
+<li>Best for: Blues, shuffle, 12-bar, slow rock</li>
+</ul>
+<h3 id="indie-style">Indie Style<a class="headerlink" href="#indie-style" title="Permanent link">&para;</a></h3>
+<ul>
+<li>Kick on 1 and 3, occasional beat 4</li>
+<li>Snare on 2 and 4 with occasional rimshot</li>
+<li>Sparse, driving hi-hat pattern</li>
+<li>Floor tom accent on beat 4</li>
+<li>Minimal cymbal use</li>
+<li>Best for: Indie rock, alternative, lo-fi</li>
+</ul>
+<h3 id="jazz-style">Jazz Style<a class="headerlink" href="#jazz-style" title="Permanent link">&para;</a></h3>
+<ul>
+<li>Classic jazz ride pattern (1, 2-and, 3, 4-and)</li>
+<li>Sparse, comping kick (fractal placement)</li>
+<li>Cross-stick/brush snare feel</li>
+<li>Hi-hat on 2 and 4 with foot</li>
+<li>No crashes - clean cymbal work</li>
+<li>Best for: Jazz, swing, bebop, fusion</li>
+</ul>
+<h3 id="generic-style">Generic Style<a class="headerlink" href="#generic-style" title="Permanent link">&para;</a></h3>
+<ul>
+<li>Balanced kick on every beat</li>
+<li>Standard snare backbeat on 2 and 4</li>
+<li>Natural hi-hat variation</li>
+<li>Crash cymbal on bar 1 every 4 bars</li>
+<li>Best for: General use, experimentation, demos</li>
+</ul>
+<h2 id="gm-drum-map-reference">GM Drum Map Reference<a class="headerlink" href="#gm-drum-map-reference" title="Permanent link">&para;</a></h2>
+<p>beatstoch uses General MIDI (GM) standard drum note assignments. All generated MIDI files are compatible with any GM-compliant synthesizer, DAW, or drum machine.</p>
+<h3 id="kicks-notes-35-36">Kicks (Notes 35-36)<a class="headerlink" href="#kicks-notes-35-36" title="Permanent link">&para;</a></h3>
+<table>
+<thead>
+<tr>
+<th>Key</th>
+<th>Note</th>
+<th>GM Name</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>kick</code></td>
+<td>36</td>
+<td>Bass Drum 1</td>
+</tr>
+<tr>
+<td><code>kick_acoustic</code></td>
+<td>35</td>
+<td>Acoustic Bass Drum</td>
+</tr>
+</tbody>
+</table>
+<h3 id="snares-claps-notes-37-40">Snares &amp; Claps (Notes 37-40)<a class="headerlink" href="#snares-claps-notes-37-40" title="Permanent link">&para;</a></h3>
+<table>
+<thead>
+<tr>
+<th>Key</th>
+<th>Note</th>
+<th>GM Name</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>snare</code></td>
+<td>38</td>
+<td>Acoustic Snare</td>
+</tr>
+<tr>
+<td><code>snare_electric</code></td>
+<td>40</td>
+<td>Electric Snare</td>
+</tr>
+<tr>
+<td><code>side_stick</code></td>
+<td>37</td>
+<td>Side Stick / Rimshot</td>
+</tr>
+<tr>
+<td><code>clap</code></td>
+<td>39</td>
+<td>Hand Clap</td>
+</tr>
+</tbody>
+</table>
+<h3 id="hi-hats-notes-42-44-46">Hi-Hats (Notes 42, 44, 46)<a class="headerlink" href="#hi-hats-notes-42-44-46" title="Permanent link">&para;</a></h3>
+<table>
+<thead>
+<tr>
+<th>Key</th>
+<th>Note</th>
+<th>GM Name</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>closed_hat</code></td>
+<td>42</td>
+<td>Closed Hi-Hat</td>
+</tr>
+<tr>
+<td><code>pedal_hat</code></td>
+<td>44</td>
+<td>Pedal Hi-Hat</td>
+</tr>
+<tr>
+<td><code>open_hat</code></td>
+<td>46</td>
+<td>Open Hi-Hat</td>
+</tr>
+</tbody>
+</table>
+<h3 id="cymbals-notes-49-59">Cymbals (Notes 49-59)<a class="headerlink" href="#cymbals-notes-49-59" title="Permanent link">&para;</a></h3>
+<table>
+<thead>
+<tr>
+<th>Key</th>
+<th>Note</th>
+<th>GM Name</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>crash</code></td>
+<td>49</td>
+<td>Crash Cymbal 1</td>
+</tr>
+<tr>
+<td><code>crash2</code></td>
+<td>57</td>
+<td>Crash Cymbal 2</td>
+</tr>
+<tr>
+<td><code>ride</code></td>
+<td>51</td>
+<td>Ride Cymbal 1</td>
+</tr>
+<tr>
+<td><code>ride_bell</code></td>
+<td>53</td>
+<td>Ride Bell</td>
+</tr>
+<tr>
+<td><code>ride2</code></td>
+<td>59</td>
+<td>Ride Cymbal 2</td>
+</tr>
+<tr>
+<td><code>splash</code></td>
+<td>55</td>
+<td>Splash Cymbal</td>
+</tr>
+<tr>
+<td><code>china</code></td>
+<td>52</td>
+<td>Chinese Cymbal</td>
+</tr>
+</tbody>
+</table>
+<h3 id="toms-notes-41-50">Toms (Notes 41-50)<a class="headerlink" href="#toms-notes-41-50" title="Permanent link">&para;</a></h3>
+<table>
+<thead>
+<tr>
+<th>Key</th>
+<th>Note</th>
+<th>GM Name</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>tom_low</code></td>
+<td>41</td>
+<td>Low Floor Tom</td>
+</tr>
+<tr>
+<td><code>tom_floor_high</code></td>
+<td>43</td>
+<td>High Floor Tom</td>
+</tr>
+<tr>
+<td><code>tom_mid</code></td>
+<td>45</td>
+<td>Low Tom</td>
+</tr>
+<tr>
+<td><code>tom_mid_low</code></td>
+<td>47</td>
+<td>Low-Mid Tom</td>
+</tr>
+<tr>
+<td><code>tom_mid_high</code></td>
+<td>48</td>
+<td>Hi-Mid Tom</td>
+</tr>
+<tr>
+<td><code>tom_high</code></td>
+<td>50</td>
+<td>High Tom</td>
+</tr>
+</tbody>
+</table>
+<h3 id="percussion-notes-54-77">Percussion (Notes 54-77)<a class="headerlink" href="#percussion-notes-54-77" title="Permanent link">&para;</a></h3>
+<table>
+<thead>
+<tr>
+<th>Key</th>
+<th>Note</th>
+<th>GM Name</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>tambourine</code></td>
+<td>54</td>
+<td>Tambourine</td>
+</tr>
+<tr>
+<td><code>cowbell</code></td>
+<td>56</td>
+<td>Cowbell</td>
+</tr>
+<tr>
+<td><code>bongo_high</code></td>
+<td>60</td>
+<td>Hi Bongo</td>
+</tr>
+<tr>
+<td><code>bongo_low</code></td>
+<td>61</td>
+<td>Low Bongo</td>
+</tr>
+<tr>
+<td><code>conga_mute</code></td>
+<td>62</td>
+<td>Mute Hi Conga</td>
+</tr>
+<tr>
+<td><code>conga_high</code></td>
+<td>63</td>
+<td>Open Hi Conga</td>
+</tr>
+<tr>
+<td><code>conga_low</code></td>
+<td>64</td>
+<td>Low Conga</td>
+</tr>
+<tr>
+<td><code>claves</code></td>
+<td>75</td>
+<td>Claves</td>
+</tr>
+<tr>
+<td><code>woodblock_high</code></td>
+<td>76</td>
+<td>Hi Wood Block</td>
+</tr>
+<tr>
+<td><code>woodblock_low</code></td>
+<td>77</td>
+<td>Low Wood Block</td>
+</tr>
+</tbody>
+</table>
+<h2 id="output-files">Output Files<a class="headerlink" href="#output-files" title="Permanent link">&para;</a></h2>
+<p>Generated MIDI files use descriptive naming:
+- <code>stoch_[artist]_[title]_[bpm]bpm_[meter].mid</code> (from song lookup)
+- <code>stoch_[artist]_[title]_[bpm]bpm_[meter]_humanized.mid</code> (with humanize &gt; 0)
+- <code>stoch_[bpm]bpm_[meter].mid</code> (from explicit BPM)
+- <code>stoch_[bpm]bpm_[meter]_humanized.mid</code> (with humanize &gt; 0)</p>
+<p>Example filenames:
+<div class="language-text highlight"><pre><span></span><code><span id="__span-13-1"><a id="__codelineno-13-1" name="__codelineno-13-1" href="#__codelineno-13-1"></a>stoch_michael_jackson_billie_jean_117bpm_44.mid
+</span><span id="__span-13-2"><a id="__codelineno-13-2" name="__codelineno-13-2" href="#__codelineno-13-2"></a>stoch_dave_brubeck_take_five_174bpm_34_humanized.mid
+</span><span id="__span-13-3"><a id="__codelineno-13-3" name="__codelineno-13-3" href="#__codelineno-13-3"></a>stoch_128bpm_44_humanized.mid
+</span></code></pre></div></p>
+<p>Files are standard MIDI format compatible with:
+- Ableton Live
+- FL Studio
+- Logic Pro
+- Pro Tools
+- Any MIDI-compatible software</p>
+<h2 id="troubleshooting">Troubleshooting<a class="headerlink" href="#troubleshooting" title="Permanent link">&para;</a></h2>
+<h3 id="bpm-lookup-issues">BPM Lookup Issues<a class="headerlink" href="#bpm-lookup-issues" title="Permanent link">&para;</a></h3>
+<ul>
+<li>Ensure internet connection is available</li>
+<li>Some songs may not be in the BPM database</li>
+<li>Use <code>--fallback-bpm</code> to specify a default BPM</li>
+<li>Enable <code>--verbose</code> to see lookup process</li>
+</ul>
+<h3 id="midi-issues">MIDI Issues<a class="headerlink" href="#midi-issues" title="Permanent link">&para;</a></h3>
+<ul>
+<li>Ensure you have a MIDI player or DAW installed</li>
+<li>Files are standard MIDI format 1</li>
+<li>Import into any DAW as MIDI tracks</li>
+</ul>
+<h3 id="common-errors">Common Errors<a class="headerlink" href="#common-errors" title="Permanent link">&para;</a></h3>
+<p><div class="language-text highlight"><pre><span></span><code><span id="__span-14-1"><a id="__codelineno-14-1" name="__codelineno-14-1" href="#__codelineno-14-1"></a>BPM lookup failed and no fallback BPM provided
+</span></code></pre></div>
+- Add <code>--fallback-bpm 120</code> or similar</p>
+<p><div class="language-text highlight"><pre><span></span><code><span id="__span-15-1"><a id="__codelineno-15-1" name="__codelineno-15-1" href="#__codelineno-15-1"></a>network error querying BPMDatabase
+</span></code></pre></div>
+- Check internet connection
+- BPM Database website may be temporarily unavailable</p>
+<h2 id="examples-by-genre">Examples by Genre<a class="headerlink" href="#examples-by-genre" title="Permanent link">&para;</a></h2>
+<h3 id="electronichouse">Electronic/House<a class="headerlink" href="#electronichouse" title="Permanent link">&para;</a></h3>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-16-1"><a id="__codelineno-16-1" name="__codelineno-16-1" href="#__codelineno-16-1"></a>beatstoch<span class="w"> </span>generate-bpm<span class="w"> </span><span class="m">128</span><span class="w"> </span>--style<span class="w"> </span>house<span class="w"> </span>--bars<span class="w"> </span><span class="m">32</span><span class="w"> </span>--intensity<span class="w"> </span><span class="m">0</span>.8
+</span></code></pre></div>
+<h3 id="hip-hoptrap">Hip-Hop/Trap<a class="headerlink" href="#hip-hoptrap" title="Permanent link">&para;</a></h3>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-17-1"><a id="__codelineno-17-1" name="__codelineno-17-1" href="#__codelineno-17-1"></a>beatstoch<span class="w"> </span>generate-bpm<span class="w"> </span><span class="m">140</span><span class="w"> </span>--style<span class="w"> </span>breaks<span class="w"> </span>--bars<span class="w"> </span><span class="m">16</span><span class="w"> </span>--swing<span class="w"> </span><span class="m">0</span>.15<span class="w"> </span>--intensity<span class="w"> </span><span class="m">0</span>.6
+</span></code></pre></div>
+<h3 id="drum-bass">Drum &amp; Bass<a class="headerlink" href="#drum-bass" title="Permanent link">&para;</a></h3>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-18-1"><a id="__codelineno-18-1" name="__codelineno-18-1" href="#__codelineno-18-1"></a>beatstoch<span class="w"> </span>generate-bpm<span class="w"> </span><span class="m">174</span><span class="w"> </span>--style<span class="w"> </span>breaks<span class="w"> </span>--bars<span class="w"> </span><span class="m">64</span><span class="w"> </span>--swing<span class="w"> </span><span class="m">0</span>.08<span class="w"> </span>--intensity<span class="w"> </span><span class="m">0</span>.9
+</span></code></pre></div>
+<h3 id="general-purpose">General Purpose<a class="headerlink" href="#general-purpose" title="Permanent link">&para;</a></h3>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-19-1"><a id="__codelineno-19-1" name="__codelineno-19-1" href="#__codelineno-19-1"></a>beatstoch<span class="w"> </span>generate<span class="w"> </span><span class="s2">&quot;Your Favorite Song&quot;</span><span class="w"> </span>--artist<span class="w"> </span><span class="s2">&quot;Artist Name&quot;</span><span class="w"> </span>--bars<span class="w"> </span><span class="m">8</span>
+</span></code></pre></div>
+
+
+
+
+
+
+
+
+
+
+
+
+                
+              </article>
+            </div>
+          
+          
+  <script>var tabs=__md_get("__tabs");if(Array.isArray(tabs))e:for(var set of document.querySelectorAll(".tabbed-set")){var labels=set.querySelector(".tabbed-labels");for(var tab of tabs)for(var label of labels.getElementsByTagName("label"))if(label.innerText.trim()===tab){var input=document.getElementById(label.htmlFor);input.checked=!0;continue e}}</script>
+
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+        </div>
+        
+          <button type="button" class="md-top md-icon" data-md-component="top" hidden>
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8z"/></svg>
+  Back to top
+</button>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+    <div class="md-copyright__highlight">
+      Released into the public domain under the Unlicense
+    </div>
+  
+  
+</div>
+      
+        
+<div class="md-social">
+  
+    
+    
+    
+    
+      
+      
+    
+    <a href="https://github.com/james-see/beatstoch" target="_blank" rel="noopener" title="github.com" class="md-social__link">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M173.9 397.4c0 2-2.3 3.6-5.2 3.6-3.3.3-5.6-1.3-5.6-3.6 0-2 2.3-3.6 5.2-3.6 3-.3 5.6 1.3 5.6 3.6m-31.1-4.5c-.7 2 1.3 4.3 4.3 4.9 2.6 1 5.6 0 6.2-2s-1.3-4.3-4.3-5.2c-2.6-.7-5.5.3-6.2 2.3m44.2-1.7c-2.9.7-4.9 2.6-4.6 4.9.3 2 2.9 3.3 5.9 2.6 2.9-.7 4.9-2.6 4.6-4.6-.3-1.9-3-3.2-5.9-2.9M252.8 8C114.1 8 8 113.3 8 252c0 110.9 69.8 205.8 169.5 239.2 12.8 2.3 17.3-5.6 17.3-12.1 0-6.2-.3-40.4-.3-61.4 0 0-70 15-84.7-29.8 0 0-11.4-29.1-27.8-36.6 0 0-22.9-15.7 1.6-15.4 0 0 24.9 2 38.6 25.8 21.9 38.6 58.6 27.5 72.9 20.9 2.3-16 8.8-27.1 16-33.7-55.9-6.2-112.3-14.3-112.3-110.5 0-27.5 7.6-41.3 23.6-58.9-2.6-6.5-11.1-33.3 2.6-67.9 20.9-6.5 69 27 69 27 20-5.6 41.5-8.5 62.8-8.5s42.8 2.9 62.8 8.5c0 0 48.1-33.6 69-27 13.7 34.7 5.2 61.4 2.6 67.9 16 17.7 25.8 31.5 25.8 58.9 0 96.5-58.9 104.2-114.8 110.5 9.2 7.9 17 22.9 17 46.4 0 33.7-.3 75.4-.3 83.6 0 6.5 4.6 14.4 17.3 12.1C436.2 457.8 504 362.9 504 252 504 113.3 391.5 8 252.8 8M105.2 352.9c-1.3 1-1 3.3.7 5.2 1.6 1.6 3.9 2.3 5.2 1 1.3-1 1-3.3-.7-5.2-1.6-1.6-3.9-2.3-5.2-1m-10.8-8.1c-.7 1.3.3 2.9 2.3 3.9 1.6 1 3.6.7 4.3-.7.7-1.3-.3-2.9-2.3-3.9-2-.6-3.6-.3-4.3.7m32.4 35.6c-1.6 1.3-1 4.3 1.3 6.2 2.3 2.3 5.2 2.6 6.5 1 1.3-1.3.7-4.3-1.3-6.2-2.2-2.3-5.2-2.6-6.5-1m-11.4-14.7c-1.6 1-1.6 3.6 0 5.9s4.3 3.3 5.6 2.3c1.6-1.3 1.6-3.9 0-6.2-1.4-2.3-4-3.3-5.6-2"/></svg>
+    </a>
+  
+    
+    
+    
+    
+      
+      
+    
+    <a href="https://pypi.org/project/beatstoch/" target="_blank" rel="noopener" title="pypi.org" class="md-social__link">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M439.8 200.5c-7.7-30.9-22.3-54.2-53.4-54.2h-40.1v47.4c0 36.8-31.2 67.8-66.8 67.8H172.7c-29.2 0-53.4 25-53.4 54.3v101.8c0 29 25.2 46 53.4 54.3 33.8 9.9 66.3 11.7 106.8 0 26.9-7.8 53.4-23.5 53.4-54.3v-40.7H226.2v-13.6h160.2c31.1 0 42.6-21.7 53.4-54.2 11.2-33.5 10.7-65.7 0-108.6M286.2 444.7a20.4 20.4 0 1 1 0-40.7 20.4 20.4 0 1 1 0 40.7M167.8 248.1h106.8c29.7 0 53.4-24.5 53.4-54.3V91.9c0-29-24.4-50.7-53.4-55.6-35.8-5.9-74.7-5.6-106.8.1-45.2 8-53.4 24.7-53.4 55.6v40.7h106.9v13.6h-147c-31.1 0-58.3 18.7-66.8 54.2-9.8 40.7-10.2 66.1 0 108.6 7.6 31.6 25.7 54.2 56.8 54.2H101v-48.8c0-35.3 30.5-66.4 66.8-66.4m-6.6-183.4a20.4 20.4 0 1 1 0 40.8 20.4 20.4 0 1 1 0-40.8"/></svg>
+    </a>
+  
+</div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    
+    
+    
+      
+      
+      <script id="__config" type="application/json">{"annotate": null, "base": "..", "features": ["navigation.instant", "navigation.tracking", "navigation.tabs", "navigation.sections", "navigation.top", "search.suggest", "search.highlight", "content.tabs.link", "content.code.copy", "content.code.annotate"], "search": "../assets/javascripts/workers/search.7a47a382.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
+    
+    
+      <script src="../assets/javascripts/bundle.e71a0d61.min.js"></script>
+      
+    
+  </body>
+</html>
