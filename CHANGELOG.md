@@ -7,6 +7,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.5.1] - 2024-11-30
+
+### Changed
+- Redesigned GitHub Pages landing page with hero section and feature cards
+- Added dark/light mode toggle
+- Moved documentation to dedicated nav section
+
 ## [1.5.0] - 2024-11-30
 
 ### Added
