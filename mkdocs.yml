@@ -42,7 +42,7 @@ theme:
     - content.code.annotate
   icon:
     repo: fontawesome/brands/github
-    logo: material/drum
+    logo: material/music-circle
 
 # Navigation structure
 nav:
