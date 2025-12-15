@@ -7,14 +7,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
-## [1.5.1] - 2024-11-30
+## [1.5.1] - 2025-12-15
 
 ### Changed
 - Redesigned GitHub Pages landing page with hero section and feature cards
 - Added dark/light mode toggle
 - Moved documentation to dedicated nav section
 
-## [1.5.0] - 2024-11-30
+## [1.5.0] - 2025-12-15
 
 ### Added
 - **New Styles**: Rock, Blues, Indie, Jazz drum patterns
