@@ -276,6 +276,7 @@ def generate_stochastic_pattern(
     groove_intensity: float = 0.7,
     humanize: float = 0.0,  # 0.0 = off, 1.0 = full humanization
     predictability: float = 0.85,  # 0.0 = chaotic, 1.0 = fully predictable
+    locked: bool = False,  # If True, generate one bar and repeat it exactly
 ) -> MidiFile:
     random.seed(seed)
     np.random.seed(seed)
@@ -447,11 +448,14 @@ def generate_stochastic_pattern(
     elif style == "blues":
         # Blues: Shuffle feel, ride cymbal, laid back snare
         # Shuffle: emphasis on 1, skip 2, hit 3 (triplet feel approximated with 16ths)
+        # Use steps_per_beat - 1 for the shuffle "and" position so it works
+        # with any resolution (4 steps/beat = 16ths, 3 steps/beat = triplets)
+        shuffle_and = steps_per_beat - 1  # Last subdivision before next beat
         kick_probs = [0.0] * steps_per_bar
         for i in range(steps_per_bar):
             if i % steps_per_beat == 0:  # On the beat
                 kick_probs[i] = 0.85
-            elif i % steps_per_beat == 3:  # Shuffle "and" (approximating triplet)
+            elif i % steps_per_beat == shuffle_and:  # Shuffle "and"
                 kick_probs[i] = 0.50
 
         # Snare on 2 and 4, with ghost notes
@@ -459,7 +463,7 @@ def generate_stochastic_pattern(
         for i in range(steps_per_bar):
             if i % (2 * steps_per_beat) == steps_per_beat:  # Beats 2 and 4
                 snare_probs[i] = 0.95
-            elif i % steps_per_beat in (1, 3):  # Ghost positions
+            elif i % steps_per_beat == shuffle_and:  # Ghost on shuffle
                 snare_probs[i] = 0.25
 
         # Ride cymbal shuffle pattern
@@ -467,7 +471,7 @@ def generate_stochastic_pattern(
         for i in range(steps_per_bar):
             if i % steps_per_beat == 0:  # On beat
                 ride_probs[i] = 0.90
-            elif i % steps_per_beat == 3:  # Shuffle
+            elif i % steps_per_beat == shuffle_and:  # Shuffle
                 ride_probs[i] = 0.75
 
         # Hi-hat on 2 and 4 with foot
@@ -655,54 +659,106 @@ def generate_stochastic_pattern(
             steps_per_bar, steps_per_beat, meter, humanize
         )
 
-    for bar in range(bars):
-        bar_offset_steps = bar * steps_per_bar
+    if locked:
+        # LOCKED MODE: Generate exactly one bar, then repeat it identically
+        # for all subsequent bars. No per-bar random re-rolls, no jitter,
+        # no golden-ratio microtiming, no humanize. Swing is kept because
+        # it's deterministic per step position (same step → same swing offset).
+        bar_ticks = beats_per_bar * mid.ticks_per_beat  # ticks per bar (not steps_per_bar!)
+        one_bar_events: List[Tuple[int, str, int]] = []
+
         for name, probs, vel_rng, jitter, vel_func in instruments:
             lo, hi = vel_rng
-            # Generate natural velocity curve for this instrument
             vel_curve = vel_func(steps_per_bar, vel_rng)
 
             for s in range(steps_per_bar):
                 if random.random() < probs[s]:
-                    # Apply meter accent to velocity
                     accent = meter_accents[s] if s < len(meter_accents) else 1.0
                     vel = _clip_velocity(vel_curve[s] * intensity * accent, lo, hi)
+                    # No golden offset, no jitter — just swing (deterministic)
+                    tick = _step_to_ticks(s, 0.0, 0.0)
+                    one_bar_events.append((tick, name, vel))
 
-                    # Use golden ratio timing for psychoacoustic groove
-                    offset_idx = (bar_offset_steps + s) % len(golden_offsets)
-                    golden_offset = golden_offsets[offset_idx] * groove_intensity
-
-                    jitter_sec = _triangular(0.0, jitter)
-                    abs_step = bar_offset_steps + s
-                    tick = _step_to_ticks(abs_step, jitter_sec, golden_offset)
-
-                    # Apply humanize timing variation
-                    if humanize > 0:
-                        tick = _humanize_timing(tick, mid.ticks_per_beat, humanize)
-
-                    events.append((tick, name, vel))
-
-        # Add ghost notes for snare (most common ghost note instrument)
+        # Add ghost notes to the one-bar template (without random re-roll)
         if humanize > 0 and ghost_notes_pattern:
             for ghost_step, ghost_vel in ghost_notes_pattern:
-                # Regenerate ghost notes each bar with some variation
-                if random.random() < 0.7:  # Don't repeat every bar exactly
-                    abs_step = bar_offset_steps + ghost_step
-                    tick = _step_to_ticks(abs_step, 0, 0)
-                    tick = _humanize_timing(tick, mid.ticks_per_beat, humanize)
-                    events.append((tick, "snare", ghost_vel))
+                tick = _step_to_ticks(ghost_step, 0, 0)
+                one_bar_events.append((tick, "snare", ghost_vel))
+
+        one_bar_events.sort(key=lambda x: x[0])
+
+        # Repeat the one-bar pattern for every bar. Wrap any ticks that
+        # spill past the bar boundary (swing can push the last step forward)
+        # back into the bar so the pattern stays self-contained.
+        for bar in range(bars):
+            bar_offset = bar * bar_ticks
+            for tick, name, vel in one_bar_events:
+                wrapped = tick % bar_ticks
+                events.append((wrapped + bar_offset, name, vel))
+    else:
+        for bar in range(bars):
+            bar_offset_steps = bar * steps_per_bar
+            for name, probs, vel_rng, jitter, vel_func in instruments:
+                lo, hi = vel_rng
+                # Generate natural velocity curve for this instrument
+                vel_curve = vel_func(steps_per_bar, vel_rng)
+
+                for s in range(steps_per_bar):
+                    if random.random() < probs[s]:
+                        # Apply meter accent to velocity
+                        accent = meter_accents[s] if s < len(meter_accents) else 1.0
+                        vel = _clip_velocity(vel_curve[s] * intensity * accent, lo, hi)
+
+                        # Use golden ratio timing for psychoacoustic groove
+                        offset_idx = (bar_offset_steps + s) % len(golden_offsets)
+                        golden_offset = golden_offsets[offset_idx] * groove_intensity
+
+                        jitter_sec = _triangular(0.0, jitter)
+                        abs_step = bar_offset_steps + s
+                        tick = _step_to_ticks(abs_step, jitter_sec, golden_offset)
+
+                        # Apply humanize timing variation
+                        if humanize > 0:
+                            tick = _humanize_timing(tick, mid.ticks_per_beat, humanize)
+
+                        events.append((tick, name, vel))
+
+            # Add ghost notes for snare (most common ghost note instrument)
+            if humanize > 0 and ghost_notes_pattern:
+                for ghost_step, ghost_vel in ghost_notes_pattern:
+                    # Regenerate ghost notes each bar with some variation
+                    if random.random() < 0.7:  # Don't repeat every bar exactly
+                        abs_step = bar_offset_steps + ghost_step
+                        tick = _step_to_ticks(abs_step, 0, 0)
+                        tick = _humanize_timing(tick, mid.ticks_per_beat, humanize)
+                        events.append((tick, "snare", ghost_vel))
 
     events.sort(key=lambda x: x[0])
 
-    last_tick = 0
+    # Build interleaved note_on/note_off events and write with correct delta times.
+    # The old code advanced last_tick past each note_off (tick + 60), which caused
+    # simultaneous notes to drift forward and garbled locked-mode pattern repeats.
+    midi_events: List[Tuple[int, str, int, int]] = []  # (tick, type, note, vel)
     for tick, name, vel in events:
-        delta = tick - last_tick
         note = DRUMS.get(name, DRUMS["closed_hat"])
-        track.append(
-            Message("note_on", channel=9, note=note, velocity=vel, time=max(0, delta))
-        )
-        track.append(Message("note_off", channel=9, note=note, velocity=0, time=60))
-        last_tick = tick + 60
+        midi_events.append((tick, "on", note, vel))
+        midi_events.append((tick + 60, "off", note, 0))
+
+    # Sort: at same tick, note_off before note_on to free voices first
+    midi_events.sort(key=lambda x: (x[0], 0 if x[1] == "off" else 1))
+
+    last_tick = 0
+    for tick, etype, note, vel in midi_events:
+        delta = max(0, tick - last_tick)
+        if etype == "on":
+            track.append(
+                Message("note_on", channel=9, note=note, velocity=vel, time=delta)
+            )
+        else:
+            track.append(
+                Message("note_off", channel=9, note=note, velocity=0, time=delta)
+            )
+        last_tick = tick
 
     return mid
 
@@ -725,6 +781,7 @@ def generate_from_song(
     seed: Optional[int] = None,
     fallback_bpm: Optional[float] = None,
     verbose: bool = False,
+    locked: bool = False,
 ) -> Tuple[MidiFile, float]:
     bpm = fetch_bpm_from_bpmdatabase(song_title, artist, verbose=verbose)
     if bpm is None:
@@ -748,5 +805,6 @@ def generate_from_song(
         predictability=predictability,
         seed=seed,
         style=style,
+        locked=locked,
     )
     return mid, bpm

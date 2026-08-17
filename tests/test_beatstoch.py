@@ -79,3 +79,43 @@ def test_generate_stochastic_pattern_different_seeds():
     # This is a probabilistic test
     assert isinstance(midi_file1, MidiFile)
     assert isinstance(midi_file2, MidiFile)
+
+
+def test_generate_stochastic_pattern_locked_repeats():
+    """Test that locked mode produces identical bars (no per-bar variation)."""
+    from collections import defaultdict
+    import mido
+
+    midi_file = generate_stochastic_pattern(
+        bpm=88, bars=8, style="blues", swing=0.6, locked=True, seed=42
+    )
+
+    ppq = midi_file.ticks_per_beat
+    bar_ticks = 4 * ppq
+
+    # Collect note_on events per bar
+    bars = defaultdict(list)
+    for track in midi_file.tracks:
+        abs_time = 0
+        for msg in track:
+            abs_time += msg.time
+            if msg.type == "note_on" and msg.velocity > 0:
+                bar = abs_time // bar_ticks
+                pos = abs_time % bar_ticks
+                bars[bar].append((pos, msg.note, msg.velocity))
+
+    # All bars should be identical
+    bar0 = sorted(bars[0])
+    assert len(bar0) > 0, "Bar 0 should have notes"
+    for bar in range(8):
+        assert sorted(bars[bar]) == bar0, f"Bar {bar} differs from bar 0 in locked mode"
+
+
+def test_generate_stochastic_pattern_locked_all_styles():
+    """Test that locked mode works for all styles without errors."""
+    for style in ["house", "breaks", "rock", "blues", "indie", "jazz", "generic"]:
+        midi_file = generate_stochastic_pattern(
+            bpm=120, bars=4, style=style, locked=True, seed=42
+        )
+        assert isinstance(midi_file, MidiFile)
+        assert midi_file.length > 0

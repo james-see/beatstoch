@@ -31,6 +31,10 @@ Examples:
   beatstoch generate-bpm 128 --predictability 1.0          # Fully predictable (mechanical)
   beatstoch generate-bpm 128 --predictability 0.5          # More variation/surprises
 
+  # Locked mode: repeat one bar exactly (no per-bar variation)
+  beatstoch generate-bpm 88 --style blues --swing 0.6 --locked   # Tight blues shuffle
+  beatstoch generate-bpm 120 --style rock --locked               # Locked rock beat
+
   # Combine features
   beatstoch generate-bpm 120 --style rock --humanize 0.6 --groove-intensity 0.8
   beatstoch generate "Take Five" --artist "Dave Brubeck" --style jazz --fallback-bpm 174
@@ -150,6 +154,11 @@ def main():
     gsong.add_argument("--seed", type=int, help="Random seed for reproducible patterns")
     gsong.add_argument("--fallback-bpm", type=float, help="BPM to use if lookup fails")
     gsong.add_argument("--verbose", action="store_true", help="Show BPM lookup details")
+    gsong.add_argument(
+        "--locked",
+        action="store_true",
+        help="Locked mode: generate one bar and repeat it exactly (no per-bar variation, no jitter)",
+    )
 
     # --- generate-bpm command ---
     gbpm = sub.add_parser(
@@ -211,6 +220,11 @@ def main():
         help="Pattern predictability: 1.0=mechanical, 0.0=chaotic (default: 0.85)",
     )
     gbpm.add_argument("--seed", type=int, help="Random seed for reproducible patterns")
+    gbpm.add_argument(
+        "--locked",
+        action="store_true",
+        help="Locked mode: generate one bar and repeat it exactly (no per-bar variation, no jitter)",
+    )
 
     args = parser.parse_args()
 
@@ -236,6 +250,7 @@ def main():
                 seed=args.seed,
                 fallback_bpm=args.fallback_bpm,
                 verbose=args.verbose,
+                locked=args.locked,
             )
         except Exception as e:
             print(f"beatstoch: {e}", file=sys.stderr)
@@ -249,10 +264,11 @@ def main():
         )
         meter_str = f"{args.meter[0]}{args.meter[1]}"
         humanize_str = "_humanized" if args.humanize > 0 else ""
-        out_path = f"stoch_{safe_artist}_{safe_title}_{int(bpm_used)}bpm_{meter_str}{humanize_str}.mid"
+        locked_str = "_locked" if args.locked else ""
+        out_path = f"stoch_{safe_artist}_{safe_title}_{int(bpm_used)}bpm_{meter_str}{humanize_str}{locked_str}.mid"
         mid.save(out_path)
         print(
-            f"Wrote {out_path} (BPM={bpm_used}, meter={args.meter[0]}/{args.meter[1]}, humanize={args.humanize})"
+            f"Wrote {out_path} (BPM={bpm_used}, meter={args.meter[0]}/{args.meter[1]}, humanize={args.humanize}, locked={args.locked})"
         )
     else:
         mid = generate_stochastic_pattern(
@@ -267,13 +283,15 @@ def main():
             predictability=args.predictability,
             seed=args.seed if args.seed is not None else 42,
             style=args.style,
+            locked=args.locked,
         )
         meter_str = f"{args.meter[0]}{args.meter[1]}"
         humanize_str = "_humanized" if args.humanize > 0 else ""
-        out_path = f"stoch_{int(args.bpm)}bpm_{meter_str}{humanize_str}.mid"
+        locked_str = "_locked" if args.locked else ""
+        out_path = f"stoch_{int(args.bpm)}bpm_{meter_str}{humanize_str}{locked_str}.mid"
         mid.save(out_path)
         print(
-            f"Wrote {out_path} (meter={args.meter[0]}/{args.meter[1]}, humanize={args.humanize})"
+            f"Wrote {out_path} (meter={args.meter[0]}/{args.meter[1]}, humanize={args.humanize}, locked={args.locked})"
         )
 
 
