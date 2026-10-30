@@ -1,10 +1,11 @@
 # filename: beatstoch/generator.py
-import random
 import math
-from typing import List, Tuple, Optional
+import random
 
 import numpy as np
 from mido import Message, MetaMessage, MidiFile, MidiTrack, bpm2tempo
+
+from .bpm import fetch_bpm_from_bpmdatabase
 
 # General MIDI drum note numbers (GM Standard)
 DRUMS = {
@@ -68,7 +69,7 @@ def _clip_velocity(val: float, lo: int = 1, hi: int = 127) -> int:
     return max(lo, min(hi, int(round(val))))
 
 
-def _fibonacci_probabilities(steps: int, base_prob: float = 0.3) -> List[float]:
+def _fibonacci_probabilities(steps: int, base_prob: float = 0.3) -> list[float]:
     """Generate probabilities using Fibonacci sequence for natural rhythm patterns."""
     fib = [1, 1, 2, 3, 5, 8, 13, 21, 34, 55, 89, 144]
     probs = []
@@ -83,7 +84,7 @@ def _fibonacci_probabilities(steps: int, base_prob: float = 0.3) -> List[float]:
     return probs
 
 
-def _golden_ratio_timing(steps: int, bpm: float) -> List[float]:
+def _golden_ratio_timing(steps: int, bpm: float) -> list[float]:
     """Generate timing offsets based on golden ratio for pleasing rhythm."""
     base_timing = 60.0 / bpm  # seconds per beat
     offsets = []
@@ -100,7 +101,7 @@ def _golden_ratio_timing(steps: int, bpm: float) -> List[float]:
     return offsets
 
 
-def _fractal_pattern(length: int, complexity: float) -> List[float]:
+def _fractal_pattern(length: int, complexity: float) -> list[float]:
     """Generate fractal-based pattern for natural complexity."""
     # Use depth based on length to ensure we get the right number of items
     depth = max(1, int(math.log2(length)) + 1)
@@ -115,7 +116,7 @@ def _fractal_pattern(length: int, complexity: float) -> List[float]:
     return [min(1.0, max(0.0, p)) for p in pattern]
 
 
-def _natural_velocity_curve(steps: int, base_velocity: Tuple[int, int]) -> List[int]:
+def _natural_velocity_curve(steps: int, base_velocity: tuple[int, int]) -> list[int]:
     """Generate natural velocity variation using sine wave curves."""
     lo, hi = base_velocity
     velocities = []
@@ -138,8 +139,8 @@ def _natural_velocity_curve(steps: int, base_velocity: Tuple[int, int]) -> List[
 
 
 def _psychoacoustic_balance(
-    probs: List[float], predictability: float = PREDICTABILITY_RATIO
-) -> List[float]:
+    probs: list[float], predictability: float = PREDICTABILITY_RATIO
+) -> list[float]:
     """Balance predictability vs surprise for optimal human preference."""
     balanced = []
 
@@ -164,25 +165,21 @@ def _psychoacoustic_balance(
 def _generate_ghost_notes(
     steps_per_bar: int,
     steps_per_beat: int,
-    meter: Tuple[int, int],
+    meter: tuple[int, int],
     humanize_amount: float = 0.5,
-) -> List[Tuple[int, int]]:
+) -> list[tuple[int, int]]:
     """Generate ghost note positions and velocities for humanization.
 
     Returns list of (step_position, velocity) tuples for ghost notes.
     Ghost notes typically fall on upbeats and subdivisions.
     """
     ghost_notes = []
-    beats_per_bar = meter[0]
 
     for step in range(steps_per_bar):
         beat_position = step % steps_per_beat
-        beat_num = step // steps_per_beat
 
         # Ghost notes on weak subdivisions (not on main beats)
         is_main_beat = beat_position == 0
-        is_backbeat = (beat_num % 2 == 1) and is_main_beat
-
         # Skip main beats and backbeats - those get real hits
         if is_main_beat:
             continue
@@ -209,9 +206,7 @@ def _generate_ghost_notes(
     return ghost_notes
 
 
-def _humanize_timing(
-    base_tick: int, ticks_per_beat: int, humanize_amount: float
-) -> int:
+def _humanize_timing(base_tick: int, ticks_per_beat: int, humanize_amount: float) -> int:
     """Add human-like timing variation to a tick position."""
     # Convert humanize range to ticks
     ms_range = TIMING_HUMANIZE_MS
@@ -226,15 +221,14 @@ def _humanize_timing(
 
 
 def _get_meter_accents(
-    meter: Tuple[int, int], steps_per_bar: int, steps_per_beat: int
-) -> List[float]:
+    meter: tuple[int, int], steps_per_bar: int, steps_per_beat: int
+) -> list[float]:
     """Get accent pattern based on time signature for natural phrasing."""
-    beats_per_bar = meter[0]
     accents = []
 
     for step in range(steps_per_bar):
-        beat_num = step // steps_per_beat
         beat_position = step % steps_per_beat
+        beat_num = step // steps_per_beat
 
         if beat_position == 0:  # On the beat
             if meter == (3, 4):
@@ -267,7 +261,7 @@ def _get_meter_accents(
 def generate_stochastic_pattern(
     bpm: float,
     bars: int = 4,
-    meter: Tuple[int, int] = (4, 4),
+    meter: tuple[int, int] = (4, 4),
     steps_per_beat: int = 4,
     swing: float = 0.12,
     intensity: float = 0.9,
@@ -292,14 +286,14 @@ def generate_stochastic_pattern(
     track.append(MetaMessage("set_tempo", tempo=tempo, time=0))
 
     # Helper to create crash on beat 1 of every N bars
-    def _crash_pattern(steps: int, every_n_bars: int = 4) -> List[float]:
+    def _crash_pattern(steps: int, every_n_bars: int = 4) -> list[float]:
         probs = [0.0] * steps
         # Crash on first beat
         probs[0] = 0.95 if every_n_bars <= 4 else 0.8
         return probs
 
     # Helper to create ride pattern (8ths or quarters)
-    def _ride_pattern(steps: int, density: str = "eighth") -> List[float]:
+    def _ride_pattern(steps: int, density: str = "eighth") -> list[float]:
         probs = []
         for i in range(steps):
             if density == "quarter" and i % steps_per_beat == 0:
@@ -315,8 +309,7 @@ def generate_stochastic_pattern(
         # House: Four-on-the-floor with driving hats and sparse crashes
         kick_base = _fibonacci_probabilities(steps_per_bar, 0.25)
         kick_probs = [
-            0.98 if (i % steps_per_beat == 0) else p * 0.2
-            for i, p in enumerate(kick_base)
+            0.98 if (i % steps_per_beat == 0) else p * 0.2 for i, p in enumerate(kick_base)
         ]
 
         snare_base = _fibonacci_probabilities(steps_per_bar, 0.2)
@@ -361,14 +354,10 @@ def generate_stochastic_pattern(
     elif style == "breaks":
         # Breaks: Syncopated with ghost notes and complex hats
         kick_fractal = _fractal_pattern(steps_per_bar, 0.7)
-        kick_probs = [
-            0.90 if i in (0, 6, 8, 14) else p * 0.4 for i, p in enumerate(kick_fractal)
-        ]
+        kick_probs = [0.90 if i in (0, 6, 8, 14) else p * 0.4 for i, p in enumerate(kick_fractal)]
 
         snare_fractal = _fractal_pattern(steps_per_bar, 0.5)
-        snare_probs = [
-            0.92 if i in (4, 12) else p * 0.35 for i, p in enumerate(snare_fractal)
-        ]
+        snare_probs = [0.92 if i in (4, 12) else p * 0.35 for i, p in enumerate(snare_fractal)]
 
         hat_probs = _fractal_pattern(steps_per_bar, 0.8)
 
@@ -414,8 +403,7 @@ def generate_stochastic_pattern(
 
         # Driving 8th note hats
         hat_probs = [
-            0.90 if (i % (steps_per_beat // 2) == 0) else 0.15
-            for i in range(steps_per_bar)
+            0.90 if (i % (steps_per_beat // 2) == 0) else 0.15 for i in range(steps_per_bar)
         ]
 
         # Open hat on upbeats occasionally
@@ -520,14 +508,11 @@ def generate_stochastic_pattern(
 
         # Sparse, driving hats
         hat_probs = [
-            0.85 if (i % (steps_per_beat // 2) == 0) else 0.10
-            for i in range(steps_per_bar)
+            0.85 if (i % (steps_per_beat // 2) == 0) else 0.10 for i in range(steps_per_bar)
         ]
 
         # Floor tom accent on beat 4 sometimes
-        tom_probs = [
-            0.35 if i == 3 * steps_per_beat else 0.0 for i in range(steps_per_bar)
-        ]
+        tom_probs = [0.35 if i == 3 * steps_per_beat else 0.0 for i in range(steps_per_bar)]
 
         instruments = [
             ("kick", kick_probs, (95, 120), 0.004, _natural_velocity_curve),
@@ -562,8 +547,7 @@ def generate_stochastic_pattern(
         # Sparse, comping kick
         kick_probs = _fractal_pattern(steps_per_bar, 0.4)
         kick_probs = [
-            p * 0.5 if i % steps_per_beat != 0 else p * 0.3
-            for i, p in enumerate(kick_probs)
+            p * 0.5 if i % steps_per_beat != 0 else p * 0.3 for i, p in enumerate(kick_probs)
         ]
 
         # Comping snare (cross-stick feel)
@@ -587,8 +571,7 @@ def generate_stochastic_pattern(
         # Generic: Balanced backbeat with natural variation
         kick_fib = _fibonacci_probabilities(steps_per_bar, 0.22)
         kick_probs = [
-            0.95 if (i % steps_per_beat == 0) else p * 0.25
-            for i, p in enumerate(kick_fib)
+            0.95 if (i % steps_per_beat == 0) else p * 0.25 for i, p in enumerate(kick_fib)
         ]
 
         snare_fib = _fibonacci_probabilities(steps_per_bar, 0.18)
@@ -645,7 +628,7 @@ def generate_stochastic_pattern(
         jitter_ticks = int(round(jitter_sec * ticks_per_sec))
         return base_ticks + jitter_ticks
 
-    events: List[Tuple[int, str, int]] = []
+    events: list[tuple[int, str, int]] = []
     # Generate golden ratio timing offsets for the entire pattern
     golden_offsets = _golden_ratio_timing(steps_per_bar * bars, bpm)
 
@@ -655,9 +638,7 @@ def generate_stochastic_pattern(
     # Generate ghost note pattern if humanize is enabled
     ghost_notes_pattern = []
     if humanize > 0:
-        ghost_notes_pattern = _generate_ghost_notes(
-            steps_per_bar, steps_per_beat, meter, humanize
-        )
+        ghost_notes_pattern = _generate_ghost_notes(steps_per_bar, steps_per_beat, meter, humanize)
 
     if locked:
         # LOCKED MODE: Generate exactly one bar, then repeat it identically
@@ -665,9 +646,9 @@ def generate_stochastic_pattern(
         # no golden-ratio microtiming, no humanize. Swing is kept because
         # it's deterministic per step position (same step → same swing offset).
         bar_ticks = beats_per_bar * mid.ticks_per_beat  # ticks per bar (not steps_per_bar!)
-        one_bar_events: List[Tuple[int, str, int]] = []
+        one_bar_events: list[tuple[int, str, int]] = []
 
-        for name, probs, vel_rng, jitter, vel_func in instruments:
+        for name, probs, vel_rng, _jitter, vel_func in instruments:
             lo, hi = vel_rng
             vel_curve = vel_func(steps_per_bar, vel_rng)
 
@@ -698,7 +679,7 @@ def generate_stochastic_pattern(
     else:
         for bar in range(bars):
             bar_offset_steps = bar * steps_per_bar
-            for name, probs, vel_rng, jitter, vel_func in instruments:
+            for name, probs, vel_rng, _jitter, vel_func in instruments:
                 lo, hi = vel_rng
                 # Generate natural velocity curve for this instrument
                 vel_curve = vel_func(steps_per_bar, vel_rng)
@@ -738,7 +719,7 @@ def generate_stochastic_pattern(
     # Build interleaved note_on/note_off events and write with correct delta times.
     # The old code advanced last_tick past each note_off (tick + 60), which caused
     # simultaneous notes to drift forward and garbled locked-mode pattern repeats.
-    midi_events: List[Tuple[int, str, int, int]] = []  # (tick, type, note, vel)
+    midi_events: list[tuple[int, str, int, int]] = []  # (tick, type, note, vel)
     for tick, name, vel in events:
         note = DRUMS.get(name, DRUMS["closed_hat"])
         midi_events.append((tick, "on", note, vel))
@@ -751,38 +732,31 @@ def generate_stochastic_pattern(
     for tick, etype, note, vel in midi_events:
         delta = max(0, tick - last_tick)
         if etype == "on":
-            track.append(
-                Message("note_on", channel=9, note=note, velocity=vel, time=delta)
-            )
+            track.append(Message("note_on", channel=9, note=note, velocity=vel, time=delta))
         else:
-            track.append(
-                Message("note_off", channel=9, note=note, velocity=0, time=delta)
-            )
+            track.append(Message("note_off", channel=9, note=note, velocity=0, time=delta))
         last_tick = tick
 
     return mid
 
 
-from .bpm import fetch_bpm_from_bpmdatabase
-
-
 def generate_from_song(
     song_title: str,
-    artist: Optional[str] = None,
+    artist: str | None = None,
     bars: int = 8,
     style: str = "house",
-    meter: Tuple[int, int] = (4, 4),
+    meter: tuple[int, int] = (4, 4),
     steps_per_beat: int = 4,
     swing: float = 0.10,
     intensity: float = 0.9,
     groove_intensity: float = 0.7,
     humanize: float = 0.0,
     predictability: float = 0.85,
-    seed: Optional[int] = None,
-    fallback_bpm: Optional[float] = None,
+    seed: int | None = None,
+    fallback_bpm: float | None = None,
     verbose: bool = False,
     locked: bool = False,
-) -> Tuple[MidiFile, float]:
+) -> tuple[MidiFile, float]:
     bpm = fetch_bpm_from_bpmdatabase(song_title, artist, verbose=verbose)
     if bpm is None:
         if fallback_bpm is None:

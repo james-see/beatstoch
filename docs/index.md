@@ -148,13 +148,7 @@ beatstoch generate-bpm 128 \
 from beatstoch import generate_stochastic_pattern
 
 # Generate a rock beat
-midi = generate_stochastic_pattern(
-    bpm=120,
-    bars=8,
-    style="rock",
-    humanize=0.5,
-    predictability=0.8
-)
+midi = generate_stochastic_pattern(bpm=120, bars=8, style="rock", humanize=0.5, predictability=0.8)
 midi.save("my_beat.mid")
 ```
 
