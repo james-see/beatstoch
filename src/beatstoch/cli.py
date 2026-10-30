@@ -71,10 +71,10 @@ def parse_meter(value: str) -> tuple:
         if len(parts) != 2:
             raise ValueError
         return (int(parts[0]), int(parts[1]))
-    except (ValueError, IndexError):
+    except (ValueError, IndexError) as error:
         raise argparse.ArgumentTypeError(
             f"Invalid meter '{value}'. Use format like '4/4', '3/4', or '2/4'"
-        )
+        ) from error
 
 
 def main():
@@ -99,9 +99,7 @@ def main():
     )
     gsong.add_argument("title", help="Song title to look up")
     gsong.add_argument("--artist", help="Artist name (improves BPM lookup accuracy)")
-    gsong.add_argument(
-        "--bars", type=int, default=8, help="Number of bars (default: 8)"
-    )
+    gsong.add_argument("--bars", type=int, default=8, help="Number of bars (default: 8)")
     gsong.add_argument(
         "--style",
         default="house",

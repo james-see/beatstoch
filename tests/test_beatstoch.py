@@ -1,6 +1,5 @@
 """Tests for beatstoch package."""
 
-import pytest
 from mido import MidiFile
 
 from beatstoch import generate_stochastic_pattern
@@ -18,12 +17,7 @@ def test_generate_stochastic_pattern_basic():
 def test_generate_stochastic_pattern_with_params():
     """Test stochastic pattern generation with custom parameters."""
     midi_file = generate_stochastic_pattern(
-        bpm=140,
-        bars=4,
-        style="breaks",
-        swing=0.1,
-        intensity=0.8,
-        seed=42
+        bpm=140, bars=4, style="breaks", swing=0.1, intensity=0.8, seed=42
     )
 
     assert isinstance(midi_file, MidiFile)
@@ -40,7 +34,7 @@ def test_generate_stochastic_pattern_different_styles():
             bpm=120,
             bars=1,
             style=style,
-            seed=42  # Consistent seed for testing
+            seed=42,  # Consistent seed for testing
         )
         assert isinstance(midi_file, MidiFile)
         assert midi_file.length > 0
@@ -84,7 +78,6 @@ def test_generate_stochastic_pattern_different_seeds():
 def test_generate_stochastic_pattern_locked_repeats():
     """Test that locked mode produces identical bars (no per-bar variation)."""
     from collections import defaultdict
-    import mido
 
     midi_file = generate_stochastic_pattern(
         bpm=88, bars=8, style="blues", swing=0.6, locked=True, seed=42
@@ -114,8 +107,6 @@ def test_generate_stochastic_pattern_locked_repeats():
 def test_generate_stochastic_pattern_locked_all_styles():
     """Test that locked mode works for all styles without errors."""
     for style in ["house", "breaks", "rock", "blues", "indie", "jazz", "generic"]:
-        midi_file = generate_stochastic_pattern(
-            bpm=120, bars=4, style=style, locked=True, seed=42
-        )
+        midi_file = generate_stochastic_pattern(bpm=120, bars=4, style=style, locked=True, seed=42)
         assert isinstance(midi_file, MidiFile)
         assert midi_file.length > 0

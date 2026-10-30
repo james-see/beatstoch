@@ -105,20 +105,14 @@ mid, bpm = generate_from_song(
     style="house",
     swing=0.1,
     intensity=0.9,
-    groove_intensity=0.8
+    groove_intensity=0.8,
 )
 mid.save(f"stoch_1979_{int(bpm)}bpm.mid")
 print(f"Generated pattern at {bpm} BPM")
 
 # Generate with explicit BPM
 mid2 = generate_stochastic_pattern(
-    bpm=127,
-    bars=4,
-    style="breaks",
-    seed=123,
-    steps_per_beat=4,
-    swing=0.12,
-    groove_intensity=0.7
+    bpm=127, bars=4, style="breaks", seed=123, steps_per_beat=4, swing=0.12, groove_intensity=0.7
 )
 mid2.save("stoch_127_breaks.mid")
 
@@ -129,7 +123,7 @@ mid3 = generate_stochastic_pattern(
     meter=(3, 4),  # 3/4 time signature
     style="generic",
     humanize=0.7,  # Add ghost notes and timing variation
-    groove_intensity=0.6
+    groove_intensity=0.6,
 )
 mid3.save("waltz_90bpm_humanized.mid")
 
@@ -141,7 +135,7 @@ mid4, bpm = generate_from_song(
     style="house",
     meter=(4, 4),
     humanize=0.5,  # Medium humanization
-    groove_intensity=0.8
+    groove_intensity=0.8,
 )
 mid4.save(f"blue_monday_{int(bpm)}bpm_humanized.mid")
 ```

@@ -1,16 +1,16 @@
-# filename: pyproject.toml
 [build-system]
-requires = ["setuptools>=68", "wheel"]
-build-backend = "setuptools.build_meta"
+requires = ["hatchling"]
+build-backend = "hatchling.build"
 
 [project]
 name = "beatstoch"
-version = "1.6.0"
+version = "1.6.1"
 description = "BPM-aware stochastic drum generator: library + CLI."
 authors = [{ name = "James Campbell" }]
+maintainers = [{ name = "James Campbell" }]
 readme = "README.md"
 license = "Unlicense"
-requires-python = ">=3.9"
+requires-python = ">=3.10"
 keywords = [
     "midi",
     "drums",
@@ -27,13 +27,14 @@ classifiers = [
     "Intended Audience :: Developers",
     "Intended Audience :: End Users/Desktop",
     "Operating System :: OS Independent",
-    "Programming Language :: Python :: 3",
-    "Programming Language :: Python :: 3.9",
+    "License :: Public Domain",
+    "Programming Language :: Python :: 3 :: Only",
     "Programming Language :: Python :: 3.10",
     "Programming Language :: Python :: 3.11",
     "Programming Language :: Python :: 3.12",
     "Programming Language :: Python :: 3.13",
     "Programming Language :: Python :: 3.14",
+    "Programming Language :: Python :: 3.15",
     "Topic :: Multimedia :: Sound/Audio :: MIDI",
     "Topic :: Artistic Software",
     "Topic :: Software Development :: Libraries :: Python Modules",
@@ -55,15 +56,33 @@ Tracker = "https://github.com/james-see/beatstoch/issues"
 [project.scripts]
 beatstoch = "beatstoch.cli:main"
 
-[tool.setuptools.package-dir]
-"" = "src"
-
-[tool.setuptools.packages.find]
-where = ["src"]
-
-[tool.uv]
-dev-dependencies = [
-    "pytest>=7.0.0",
-    "pytest-cov>=4.0.0",
+[project.optional-dependencies]
+dev = [
+    "pytest>=8.0",
+    "pytest-cov>=5.0",
+    "ruff>=0.6",
 ]
 
+[tool.hatch.build.targets.wheel]
+packages = ["src/beatstoch"]
+
+[tool.coverage.run]
+branch = true
+source = ["src"]
+
+[tool.coverage.report]
+show_missing = true
+skip_covered = true
+
+[tool.ruff]
+line-length = 100
+target-version = "py310"
+
+[tool.ruff.lint]
+select = ["E", "F", "W", "I", "N", "UP", "B", "SIM"]
+ignore = ["E501"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+python_files = ["test_*.py", "*_test.py"]
+addopts = "-q"

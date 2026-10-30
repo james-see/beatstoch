@@ -153,30 +153,30 @@ from beatstoch import generate_from_song, generate_stochastic_pattern
 midi_file, bpm = generate_from_song(
     song_title="Billie Jean",
     artist="Michael Jackson",
-    bars=16,                    # 16 bars long
-    style="breaks",             # Breakbeat style
-    meter=(4, 4),               # Time signature
-    steps_per_beat=4,           # 16th note resolution
-    swing=0.12,                 # Light swing
-    intensity=0.85,             # Dense pattern
-    groove_intensity=0.8,       # Psychoacoustic groove
-    humanize=0.5,               # Ghost notes and timing variation
-    seed=42,                    # Reproducible
-    fallback_bpm=120            # Fallback if lookup fails
+    bars=16,  # 16 bars long
+    style="breaks",  # Breakbeat style
+    meter=(4, 4),  # Time signature
+    steps_per_beat=4,  # 16th note resolution
+    swing=0.12,  # Light swing
+    intensity=0.85,  # Dense pattern
+    groove_intensity=0.8,  # Psychoacoustic groove
+    humanize=0.5,  # Ghost notes and timing variation
+    seed=42,  # Reproducible
+    fallback_bpm=120,  # Fallback if lookup fails
 )
 
 # Explicit BPM with full control
 midi_file = generate_stochastic_pattern(
     bpm=174,
     bars=32,
-    meter=(4, 4),               # Time signature
-    steps_per_beat=8,           # 32nd note resolution
-    swing=0.08,                 # Subtle swing
-    intensity=0.7,              # Sparse pattern
-    groove_intensity=0.7,       # Psychoacoustic groove
-    humanize=0.6,               # Humanization
+    meter=(4, 4),  # Time signature
+    steps_per_beat=8,  # 32nd note resolution
+    swing=0.08,  # Subtle swing
+    intensity=0.7,  # Sparse pattern
+    groove_intensity=0.7,  # Psychoacoustic groove
+    humanize=0.6,  # Humanization
     seed=123,
-    style="generic"             # All-purpose style
+    style="generic",  # All-purpose style
 )
 
 midi_file.save("complex_pattern.mid")
@@ -185,9 +185,9 @@ midi_file.save("complex_pattern.mid")
 midi_file = generate_stochastic_pattern(
     bpm=90,
     bars=8,
-    meter=(3, 4),               # Waltz time
-    humanize=0.8,               # Heavy ghost notes
-    style="generic"
+    meter=(3, 4),  # Waltz time
+    humanize=0.8,  # Heavy ghost notes
+    style="generic",
 )
 midi_file.save("waltz_humanized.mid")
 ```

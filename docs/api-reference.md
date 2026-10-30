@@ -59,7 +59,7 @@ midi_file, bpm = generate_from_song(
     swing=0.12,
     groove_intensity=0.8,
     humanize=0.5,
-    verbose=True
+    verbose=True,
 )
 
 print(f"Generated {midi_file.length} seconds at {bpm} BPM")
@@ -106,23 +106,13 @@ from beatstoch import generate_stochastic_pattern
 
 # Standard breakbeat pattern
 pattern = generate_stochastic_pattern(
-    bpm=128.0,
-    bars=8,
-    style="breaks",
-    swing=0.08,
-    intensity=0.85,
-    seed=123
+    bpm=128.0, bars=8, style="breaks", swing=0.08, intensity=0.85, seed=123
 )
 pattern.save("breakbeat_pattern.mid")
 
 # Humanized 3/4 waltz pattern
 waltz = generate_stochastic_pattern(
-    bpm=90.0,
-    bars=8,
-    meter=(3, 4),
-    style="generic",
-    humanize=0.7,
-    groove_intensity=0.6
+    bpm=90.0, bars=8, meter=(3, 4), style="generic", humanize=0.7, groove_intensity=0.6
 )
 waltz.save("waltz_humanized.mid")
 ```
@@ -211,7 +201,7 @@ for style in styles:
             bpm=bpm,
             bars=8,
             style=style,
-            seed=42  # Consistent seed for comparison
+            seed=42,  # Consistent seed for comparison
         )
         pattern.save(f"pattern_{bpm}_{style}.mid")
 ```
@@ -221,15 +211,13 @@ for style in styles:
 ```python
 from beatstoch import generate_from_song
 
+
 # Generate pattern for current project BPM
 def generate_drums_for_project(song_title, artist, project_bpm, bars=8):
     """Generate drums, using project BPM as fallback if lookup fails."""
     try:
         midi_file, detected_bpm = generate_from_song(
-            song_title,
-            artist=artist,
-            bars=bars,
-            fallback_bpm=project_bpm
+            song_title, artist=artist, bars=bars, fallback_bpm=project_bpm
         )
         print(f"Using detected BPM: {detected_bpm}")
         return midi_file, detected_bpm
@@ -237,6 +225,7 @@ def generate_drums_for_project(song_title, artist, project_bpm, bars=8):
         # Fallback to project BPM
         midi_file = generate_stochastic_pattern(project_bpm, bars=bars)
         return midi_file, project_bpm
+
 
 # Example usage in a DAW automation script
 drums, bpm = generate_drums_for_project("My Song", "My Artist", 128)
@@ -314,10 +303,12 @@ The library is not thread-safe for random number generation when using default s
 import threading
 import random
 
+
 def generate_with_thread_id(bpm, thread_id):
     # Use thread ID in seed for thread-safe generation
     seed = hash((bpm, thread_id)) % (2**31)
     return generate_stochastic_pattern(bpm, seed=seed)
+
 
 # Safe for concurrent use
 threads = []

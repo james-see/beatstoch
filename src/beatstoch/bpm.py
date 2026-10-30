@@ -2,13 +2,11 @@
 import re
 import sys
 import unicodedata
-from typing import Optional, List
+
 import requests
 from bs4 import BeautifulSoup
 
-USER_AGENT = (
-    "Mozilla/5.0 (compatible; beatstoch/1.0; +https://pypi.org/project/beatstoch/)"
-)
+USER_AGENT = "Mozilla/5.0 (compatible; beatstoch/1.0; +https://pypi.org/project/beatstoch/)"
 REQUEST_TIMEOUT = 12  # seconds
 
 
@@ -32,9 +30,9 @@ def _normalize_text(s: str) -> str:
     return s
 
 
-def _parse_rows(html: str) -> List[List[str]]:
+def _parse_rows(html: str) -> list[list[str]]:
     soup = BeautifulSoup(html, "html.parser")
-    rows: List[List[str]] = []
+    rows: list[list[str]] = []
     for tr in soup.select("table tr"):
         cols = tr.find_all(["td", "th"])
         if len(cols) < 4:
@@ -45,9 +43,7 @@ def _parse_rows(html: str) -> List[List[str]]:
     return rows
 
 
-def _pick_best_bpm(
-    rows: List[List[str]], q_title: str, q_artist: Optional[str]
-) -> Optional[float]:
+def _pick_best_bpm(rows: list[list[str]], q_title: str, q_artist: str | None) -> float | None:
     best_bpm = None
     best_score = -1.0
 
@@ -102,8 +98,8 @@ def _pick_best_bpm(
 
 
 def fetch_bpm_from_bpmdatabase(
-    song_title: str, artist: Optional[str] = None, verbose: bool = False
-) -> Optional[float]:
+    song_title: str, artist: str | None = None, verbose: bool = False
+) -> float | None:
     if not song_title:
         return None
     song_title = _sanitize_query(song_title)
@@ -127,9 +123,7 @@ def fetch_bpm_from_bpmdatabase(
             )
             resp.raise_for_status()
             rows = _parse_rows(resp.text)
-            bpm = _pick_best_bpm(
-                rows, _normalize_text(song_title), _normalize_text(artist)
-            )
+            bpm = _pick_best_bpm(rows, _normalize_text(song_title), _normalize_text(artist))
             if bpm is not None:
                 if verbose:
                     print(
